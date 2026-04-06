@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic Archive - Statistics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#494b83",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#464554",
+                    "outline": "#767586",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed-variant": "#404178",
+                    "tertiary": "#904900",
+                    "surface-dim": "#d2d9f4",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-background": "#131b2e",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-surface": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#b55d00",
+                    "surface-container-low": "#f2f3ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary-fixed": "#13144a",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#575992",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "inverse-primary": "#c0c1ff",
+                    "secondary-fixed": "#e1e0ff",
+                    "primary-container": "#6063ee",
+                    "surface-tint": "#494bd6",
+                    "surface-variant": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eaedff",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "surface-bright": "#faf8ff",
+                    "outline-variant": "#c7c4d7",
+                    "inverse-surface": "#283044",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#fffbff",
+                    "primary": "#4648d4",
+                    "background": "#faf8ff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#bdbefe",
+                    "tertiary-fixed": "#ffdcc5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-gutter { padding-left: 2rem; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopNavBar -->
+<nav class="w-full top-0 sticky bg-[#faf8ff] dark:bg-slate-900 font-['Inter'] antialiased tracking-tight z-50">
+<div class="hidden md:flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-indigo-600 dark:text-indigo-400">Kinetic Archive</span>
+<div class="flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-200" href="#">Tasks</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-200" href="#">Labels</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-low px-4 py-2 rounded-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm p-0 w-48" placeholder="Quick search..." type="text"/>
+</div>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User profile and account settings" data-alt="professional headshot of a focused designer in a creative studio environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAwdELAsxe0edkzFEd3Z3MEFH_BZG5u_CFAfzm7EO_ONa81NFdi5fIg_CP2snZDAZ_Gj0KOWjjavc2MhV26HFh7vw1aqV06eIsNZBwMvwTjsJ_0KSML7EmZKqmMxW2xann38i16Q4-3bQZUWPqFvAUumyTM2dqaYNRh8xK9_hSnO5WLsNsK6cN1JDIoKj3dH0Y2lo-ol0i0Ae37Vs7n-u5eOLpj5a9iSZDRV_9Qpokgx1vP8NMSO73VA-pQoD3ifX8hBjN9hC5OTc"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-[960px] mx-auto px-6 pt-12 pb-24">
+<!-- Dashboard Header -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Your Progress</h1>
+<p class="text-on-surface-variant max-w-md">Real-time performance metrics and historical task velocity across your archive.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-high text-on-surface-variant px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+<span>Last 30 Days</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Stat Cards: Bento Grid Style -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<!-- Total Tasks -->
+<div class="bg-surface-container-low p-6 rounded-xl border-l-4 border-primary">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Total Tasks</p>
+<div class="flex items-end justify-between">
+<h3 class="text-3xl font-bold tracking-tight">248</h3>
+<span class="text-primary text-xs font-semibold bg-surface-container-high px-2 py-1 rounded-full">+12%</span>
+</div>
+</div>
+<!-- Completed -->
+<div class="bg-surface-container-low p-6 rounded-xl border-l-4 border-emerald-500">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Completed</p>
+<div class="flex items-end justify-between">
+<h3 class="text-3xl font-bold tracking-tight text-emerald-600">178</h3>
+<span class="material-symbols-outlined text-emerald-500">check_circle</span>
+</div>
+</div>
+<!-- Pending -->
+<div class="bg-surface-container-low p-6 rounded-xl border-l-4 border-amber-500">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Pending</p>
+<div class="flex items-end justify-between">
+<h3 class="text-3xl font-bold tracking-tight text-amber-600">42</h3>
+<span class="material-symbols-outlined text-amber-500">schedule</span>
+</div>
+</div>
+<!-- Overdue -->
+<div class="bg-surface-container-low p-6 rounded-xl border-l-4 border-error">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Overdue</p>
+<div class="flex items-end justify-between">
+<h3 class="text-3xl font-bold tracking-tight text-error">28</h3>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Large Donut Chart Section -->
+<div class="md:col-span-5 bg-surface-container-lowest rounded-xl p-8 shadow-sm ring-1 ring-on-surface/5">
+<h4 class="text-lg font-bold mb-8">Completion Rate</h4>
+<div class="relative flex items-center justify-center">
+<!-- SVG Donut Representation -->
+<svg class="w-48 h-48 transform -rotate-90">
+<circle class="text-surface-container-low" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="16"></circle>
+<circle class="text-primary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.65" stroke-dashoffset="140.7" stroke-width="16"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-extrabold tracking-tighter">72%</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Progress</span>
+</div>
+</div>
+<div class="mt-10 space-y-3">
+<div class="flex justify-between items-center text-sm">
+<span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-primary"></span> Done</span>
+<span class="font-semibold">178 tasks</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-surface-container-high"></span> Remaining</span>
+<span class="font-semibold">70 tasks</span>
+</div>
+</div>
+</div>
+<!-- Bar Chart Section -->
+<div class="md:col-span-7 bg-surface-container-lowest rounded-xl p-8 shadow-sm ring-1 ring-on-surface/5">
+<div class="flex justify-between items-center mb-8">
+<h4 class="text-lg font-bold">Daily Activity</h4>
+<span class="text-xs font-semibold text-on-surface-variant">Last 7 Days</span>
+</div>
+<div class="flex items-end justify-between h-48 gap-3">
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative group">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all h-[40%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">MON</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative">
+<div class="absolute bottom-0 w-full bg-primary/60 rounded-t-lg h-[65%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">TUE</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-lg h-[90%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">WED</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative">
+<div class="absolute bottom-0 w-full bg-primary/50 rounded-t-lg h-[55%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">THU</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative">
+<div class="absolute bottom-0 w-full bg-primary/80 rounded-t-lg h-[80%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">FRI</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative">
+<div class="absolute bottom-0 w-full bg-primary/30 rounded-t-lg h-[30%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">SAT</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container-low rounded-t-lg relative">
+<div class="absolute bottom-0 w-full bg-primary/20 rounded-t-lg h-[20%]"></div>
+<div class="h-32"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-bold">SUN</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Horizontal Label Bar Chart -->
+<section class="mt-8 bg-surface-container-lowest rounded-xl p-8 shadow-sm ring-1 ring-on-surface/5">
+<h4 class="text-lg font-bold mb-6">Top Labels &amp; Contexts</h4>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-medium flex items-center gap-2"><span class="material-symbols-outlined text-indigo-500 scale-75">label</span> @Work</span>
+<span class="text-sm font-bold">84 Tasks</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-indigo-500 h-full w-[84%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-medium flex items-center gap-2"><span class="material-symbols-outlined text-emerald-500 scale-75">label</span> @Personal</span>
+<span class="text-sm font-bold">52 Tasks</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[52%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-medium flex items-center gap-2"><span class="material-symbols-outlined text-amber-500 scale-75">label</span> @Research</span>
+<span class="text-sm font-bold">36 Tasks</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full w-[36%]"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Visible on Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-[#faf8ff]/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-50">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">task_alt</span>
+<span class="font-['Inter'] text-[11px] font-medium">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">label</span>
+<span class="font-['Inter'] text-[11px] font-medium">Labels</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-['Inter'] text-[11px] font-medium">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-medium">Account</span>
+</a>
+</nav>
+</body></html>

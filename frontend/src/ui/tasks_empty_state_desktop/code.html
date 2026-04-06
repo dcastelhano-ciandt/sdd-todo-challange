@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic Archive - Tasks</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#494b83",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#464554",
+                    "outline": "#767586",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed-variant": "#404178",
+                    "tertiary": "#904900",
+                    "surface-dim": "#d2d9f4",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-background": "#131b2e",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-surface": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#b55d00",
+                    "surface-container-low": "#f2f3ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary-fixed": "#13144a",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#575992",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "inverse-primary": "#c0c1ff",
+                    "secondary-fixed": "#e1e0ff",
+                    "primary-container": "#6063ee",
+                    "surface-tint": "#494bd6",
+                    "surface-variant": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eaedff",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "surface-bright": "#faf8ff",
+                    "outline-variant": "#c7c4d7",
+                    "inverse-surface": "#283044",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#fffbff",
+                    "primary": "#4648d4",
+                    "background": "#faf8ff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#bdbefe",
+                    "tertiary-fixed": "#ffdcc5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-gutter { margin-left: 24px; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased selection:bg-primary-fixed selection:text-on-primary-fixed-variant">
+<!-- Top Navigation Bar (Shared Component Desktop) -->
+<header class="w-full top-0 sticky z-40 bg-[#faf8ff] dark:bg-slate-900 transition-colors duration-200">
+<div class="hidden md:flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-indigo-600 dark:text-indigo-400">Kinetic Archive</span>
+<nav class="flex items-center gap-6">
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 py-1" href="#">Tasks</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 px-3 py-1 rounded-xl" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 px-3 py-1 rounded-xl" href="#">Labels</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-on-surface-variant transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="User profile and account settings" class="w-full h-full object-cover" data-alt="Close up portrait of a professional man in a bright studio with soft lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCboLCZS48lcGxeeqA9tltSf5AetaDxuGdgrf-ipdh3fT1-mVlTZ9k9NIJDGOPDE980B9NEm2PvexQUnP0b_ka8OZJtdCCRw7EHUySPLO7CTXN4ihUTLoloqDg3eqKABPfXD9uCYFTn1HVxtOsNgnddlZzoOp8x-aBfWX9Cvm5qLVOz5j-V4YzGf61JvwxKzQO0gA-07eWHud84f0L-K46WroaR_pE0DuqHD4PoMDTnAyGVZUA4e1MzbgHwzq_c_lxvRH-W1UXo9RM"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="max-w-[720px] mx-auto px-6 pt-12 pb-24">
+<!-- Header & Action Section -->
+<header class="mb-12">
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-8">Tasks</h1>
+<!-- Unified Input Area -->
+<div class="space-y-4">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</div>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200 placeholder:text-on-surface-variant/50" placeholder="Add your first task above!" type="text"/>
+</div>
+<div class="flex items-center justify-between gap-4">
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                            Filters
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="sort">sort</span>
+                            Sort
+                        </button>
+</div>
+<button class="px-6 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-semibold shadow-sm hover:opacity-90 transition-all active:scale-95">
+                        Create Task
+                    </button>
+</div>
+</div>
+</header>
+<!-- Empty State Content (Editorial Focus) -->
+<section class="flex flex-col items-center justify-center py-20 text-center">
+<div class="relative w-full max-w-sm mb-10 aspect-video rounded-xl overflow-hidden bg-surface-container-low">
+<div class="absolute inset-0 bg-gradient-to-tr from-surface-container-high to-transparent opacity-50"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<!-- Abstract Illustration via Background and Shapes -->
+<div class="relative w-32 h-32">
+<div class="absolute top-0 left-0 w-full h-full border-2 border-indigo-200 rounded-xl rotate-6"></div>
+<div class="absolute top-0 left-0 w-full h-full border-2 border-indigo-100 rounded-xl -rotate-12"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2">
+<div class="w-16 h-1.5 bg-indigo-100 rounded-full"></div>
+<div class="w-12 h-1.5 bg-indigo-50 rounded-full"></div>
+<div class="w-14 h-1.5 bg-indigo-100/50 rounded-full"></div>
+</div>
+</div>
+</div>
+<img alt="Minimalist desk organization" class="w-full h-full object-cover opacity-20 mix-blend-overlay" data-alt="Close-up of a minimalist white desk with a single plant and a notebook, soft bright morning light casting gentle shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc9ZE-LDQFcxyE6CP-DlI-r59LpEFPaTpQ6AmhOKPCyX56y6Xfchshw6mX1gMrvA18VD917NrnJvhooEVETnbJvhIAGSrwheRe8Mf4q1JUHr83eM3I6HOrgOa51gT3zhPHWwVSibAfR00XASlpZarX2T5HwYvGCXf-Gnc8RffBvSpnXjRoWq7qBbcgkQlchT7XB2iOKny2hE-AvJgRSgw8XiJouw_LZzo9_qzCNJLGAtinKy8ykc2koT-LBeMtI0y0Ox3DqEJjrt0"/>
+</div>
+<div class="editorial-gutter max-w-md">
+<h2 class="text-2xl font-bold text-on-surface mb-3 tracking-tight">No tasks yet.</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed font-normal opacity-80">
+                    Your archive is a blank canvas. Start by capturing a small win or a big goal to get the momentum moving.
+                </p>
+<div class="mt-10 flex flex-wrap justify-center gap-3">
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-secondary-container text-xs font-bold tracking-wider uppercase">Quick Start</span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-secondary-container text-xs font-bold tracking-wider uppercase">Daily Log</span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-secondary-container text-xs font-bold tracking-wider uppercase">Project Hub</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Shared Component Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-[#faf8ff]/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] flex justify-around items-center h-16 pb-safe px-4">
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="task_alt" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+<span class="font-['Inter'] text-[11px] font-medium mt-1">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-100 dark:active:bg-slate-800 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-['Inter'] text-[11px] font-medium mt-1">Labels</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-100 dark:active:bg-slate-800 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[11px] font-medium mt-1">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-100 dark:active:bg-slate-800 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-medium mt-1">Account</span>
+</a>
+</nav>
+</body></html>
