@@ -2,18 +2,19 @@
 Tasks router — HTTP endpoints for task CRUD and completion toggle.
 
 Endpoints:
-  POST   /api/v1/tasks                        → 201 TaskResponse
-  GET    /api/v1/tasks?status=pending|completed → 200 TaskListResponse
-  PUT    /api/v1/tasks/{task_id}              → 200 TaskResponse
-  PATCH  /api/v1/tasks/{task_id}/toggle       → 200 TaskResponse
-  DELETE /api/v1/tasks/{task_id}             → 200 MessageResponse
+  POST   /api/v1/tasks                                → 201 TaskResponse
+  GET    /api/v1/tasks?status=pending|completed
+           &sort_by=due_date&sort_dir=asc|desc        → 200 TaskListResponse
+  PUT    /api/v1/tasks/{task_id}                      → 200 TaskResponse
+  PATCH  /api/v1/tasks/{task_id}/toggle               → 200 TaskResponse
+  DELETE /api/v1/tasks/{task_id}                     → 200 MessageResponse
 
 All endpoints require a valid Bearer token (injected via get_current_user).
 The user_id is always sourced from the validated JWT, never from the request body.
 UUID format validation for task_id is enforced at the router level.
 """
 import uuid
-from typing import Optional
+from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, Query, status
 
@@ -74,9 +75,13 @@ def create_task(
 ) -> TaskResponse:
     """Create a new task for the authenticated user.
 
-    Raises 422 if the title is missing or empty.
+    Raises 422 if the title is missing or empty, or if due_date is invalid.
     """
-    task = task_service.create_task(user_id=current_user.user_id, title=body.title)
+    task = task_service.create_task(
+        user_id=current_user.user_id,
+        title=body.title,
+        due_date=body.due_date,
+    )
     return TaskResponse.model_validate(task)
 
 
@@ -87,16 +92,26 @@ def create_task(
 @router.get("", response_model=TaskListResponse, status_code=status.HTTP_200_OK)
 def list_tasks(
     status_filter: Optional[str] = Query(default=None, alias="status"),
+    sort_by: Optional[Literal["due_date"]] = Query(default=None),
+    sort_dir: Literal["asc", "desc"] = Query(default="asc"),
     current_user: UserContext = Depends(get_current_user),
     task_service: TaskService = Depends(get_task_service),
 ) -> TaskListResponse:
-    """List tasks for the authenticated user, with optional status filter.
+    """List tasks for the authenticated user.
 
     ?status=pending   — only incomplete tasks
     ?status=completed — only completed tasks
     (no param)        — all tasks
+
+    ?sort_by=due_date  — sort by due date (ASC or DESC, NULL values last)
+    ?sort_dir=asc|desc — sort direction (default: asc)
     """
-    tasks = task_service.list_tasks(user_id=current_user.user_id, status=status_filter)
+    tasks = task_service.list_tasks(
+        user_id=current_user.user_id,
+        status=status_filter,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+    )
     return TaskListResponse(tasks=[TaskResponse.model_validate(t) for t in tasks])
 
 
@@ -111,15 +126,19 @@ def update_task(
     current_user: UserContext = Depends(get_current_user),
     task_service: TaskService = Depends(get_task_service),
 ) -> TaskResponse:
-    """Update the title of a task owned by the authenticated user.
+    """Update a task owned by the authenticated user.
 
-    Raises 422 on invalid UUID format or empty title.
+    Raises 422 on invalid UUID format, empty title, or invalid due_date.
     Raises 403 if the user does not own the task.
     Raises 404 if the task does not exist.
+    Passing due_date=null clears the existing due date.
     """
     _validate_uuid(task_id)
     task = task_service.update_task(
-        task_id=task_id, user_id=current_user.user_id, title=body.title
+        task_id=task_id,
+        user_id=current_user.user_id,
+        title=body.title,
+        due_date=body.due_date,
     )
     return TaskResponse.model_validate(task)
 
