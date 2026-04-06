@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic Archive | Task Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#494b83",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#464554",
+                    "outline": "#767586",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed-variant": "#404178",
+                    "tertiary": "#904900",
+                    "surface-dim": "#d2d9f4",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-background": "#131b2e",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-surface": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#b55d00",
+                    "surface-container-low": "#f2f3ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary-fixed": "#13144a",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#575992",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "inverse-primary": "#c0c1ff",
+                    "secondary-fixed": "#e1e0ff",
+                    "primary-container": "#6063ee",
+                    "surface-tint": "#494bd6",
+                    "surface-variant": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eaedff",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "surface-bright": "#faf8ff",
+                    "outline-variant": "#c7c4d7",
+                    "inverse-surface": "#283044",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#fffbff",
+                    "primary": "#4648d4",
+                    "background": "#faf8ff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#bdbefe",
+                    "tertiary-fixed": "#ffdcc5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon { font-variation-settings: 'FILL' 1; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<header class="w-full top-0 sticky bg-[#faf8ff] dark:bg-slate-900 z-50">
+<nav class="hidden md:flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto font-['Inter'] antialiased tracking-tight">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-indigo-600 dark:text-indigo-400">Kinetic Archive</span>
+<div class="flex items-center gap-6">
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 px-1 py-4" href="#">Tasks</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-200" href="#">Labels</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-low px-4 py-2 rounded-xl flex items-center gap-3 w-64">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-on-surface-variant" placeholder="Search tasks..." type="text"/>
+</div>
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User profile and account settings" class="w-full h-full object-cover" data-alt="professional portrait of a creative professional with a friendly expression in a brightly lit modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgbyz6s_XKiWkyQ6fpLg0YJWR2ZrIhWiEtI6JuMFtwiTA5xqAQgbB8fLezA9u7tMLaNU2pNr9YLdDJxcjeCiSPj0wjyz0Uy4iarBOV0BFewC5S6T5g2IKJK-X9FlUN0bN7TaCeSkvNDiJ5tT2uVrDQH2FMtEcDPGMp05Fno9SQKHa2b2cON04rErVLrjVrCpOTvX_0VdJ60Eq9CcirKu1gV-ZsN64zIK9QEQZ2KGRA0iNUkeLcvPGn72p0Hln18BlWLow3351_QxY"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="max-w-[720px] mx-auto px-6 py-12">
+<div class="mb-12">
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">My Archive</h1>
+<p class="text-on-surface-variant text-sm font-medium">5 active projects across 12 tasks today.</p>
+</div>
+<div class="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
+<button class="px-5 py-2 rounded-full bg-primary text-white text-sm font-semibold shadow-sm transition-transform active:scale-95">All</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-container-highest transition-colors">Today</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-container-highest transition-colors">Planned</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-surface-container-highest transition-colors">High Priority</button>
+</div>
+<div class="space-y-4">
+<div class="group">
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest transition-all">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant hover:border-primary flex items-center justify-center cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary hidden group-hover:block">check</span>
+</div>
+<div class="flex-grow">
+<h3 class="text-[16px] font-semibold text-on-surface">Redesign branding guidelines for 2024</h3>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-xs font-medium text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                                3 of 5 subtasks done
+                            </span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-bold uppercase tracking-wider">Design</span>
+</div>
+</div>
+<button class="p-2 text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="ml-10 mt-2 pl-4 border-l-2 border-surface-container-high space-y-1">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low/40 group/sub">
+<div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-sm text-on-surface-variant line-through opacity-60 flex-grow">Audit existing color palette</span>
+<div class="flex items-center gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-highest rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container hover:text-error rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low/40 group/sub">
+<div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-sm text-on-surface-variant line-through opacity-60 flex-grow">Review typography scale</span>
+<div class="flex items-center gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-highest rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container hover:text-error rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest shadow-sm group/sub">
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant cursor-pointer hover:border-primary transition-colors"></div>
+<span class="text-sm text-on-surface font-medium flex-grow">Create new icon set for mobile apps</span>
+<div class="flex items-center gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-high rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container hover:text-error rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest shadow-sm group/sub">
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant cursor-pointer hover:border-primary transition-colors"></div>
+<span class="text-sm text-on-surface font-medium flex-grow">Draft brand tone of voice documentation</span>
+<div class="flex items-center gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-high rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container hover:text-error rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low/40 group/sub">
+<div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-sm text-on-surface-variant line-through opacity-60 flex-grow">Define grid layout primitives</span>
+<div class="flex items-center gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-highest rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container hover:text-error rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-3 p-2 group/add ml-2">
+<span class="material-symbols-outlined text-primary text-[20px]">add</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/50 w-full p-0" placeholder="Add subtask" type="text"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low transition-colors group">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant hover:border-primary flex items-center justify-center cursor-pointer transition-colors"></div>
+<div class="flex-grow">
+<h3 class="text-[16px] font-semibold text-on-surface">Update engineering wiki with API endpoints</h3>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-xs font-medium text-on-surface-variant opacity-60">No subtasks</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-bold uppercase tracking-wider">Dev</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low transition-colors group">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant hover:border-primary flex items-center justify-center cursor-pointer transition-colors"></div>
+<div class="flex-grow">
+<h3 class="text-[16px] font-semibold text-on-surface">Monthly financial sync with stakeholders</h3>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-xs font-medium text-on-surface-variant opacity-60">2 subtasks</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-bold uppercase tracking-wider">Finance</span>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-8 w-full py-4 rounded-xl border-2 border-dashed border-outline-variant text-on-surface-variant font-semibold flex items-center justify-center gap-2 hover:bg-surface-container-low hover:border-primary hover:text-primary transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">add_circle</span>
+            New Task
+        </button>
+</main>
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-[#faf8ff]/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-50">
+<div class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 font-['Inter'] text-[11px] font-medium">
+<span class="material-symbols-outlined active-icon">task_alt</span>
+<span>Tasks</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 font-['Inter'] text-[11px] font-medium">
+<span class="material-symbols-outlined">label</span>
+<span>Labels</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 font-['Inter'] text-[11px] font-medium">
+<span class="material-symbols-outlined">leaderboard</span>
+<span>Stats</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 font-['Inter'] text-[11px] font-medium">
+<span class="material-symbols-outlined">account_circle</span>
+<span>Account</span>
+</div>
+</nav>
+<div class="fixed bottom-24 right-8 hidden md:block">
+<button class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-white shadow-xl shadow-primary/20 flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+</body></html>

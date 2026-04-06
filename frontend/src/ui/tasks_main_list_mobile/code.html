@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#494b83",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#464554",
+                    "outline": "#767586",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed-variant": "#404178",
+                    "tertiary": "#904900",
+                    "surface-dim": "#d2d9f4",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-background": "#131b2e",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-surface": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#b55d00",
+                    "surface-container-low": "#f2f3ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary-fixed": "#13144a",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#575992",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "inverse-primary": "#c0c1ff",
+                    "secondary-fixed": "#e1e0ff",
+                    "primary-container": "#6063ee",
+                    "surface-tint": "#494bd6",
+                    "surface-variant": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eaedff",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "surface-bright": "#faf8ff",
+                    "outline-variant": "#c7c4d7",
+                    "inverse-surface": "#283044",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#fffbff",
+                    "primary": "#4648d4",
+                    "background": "#faf8ff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#bdbefe",
+                    "tertiary-fixed": "#ffdcc5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            background: rgba(250, 248, 255, 0.8);
+        }
+        .editorial-gutter { padding-left: 1.5rem; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-20">
+<!-- Top Navigation Bar (Mobile View) -->
+<header class="w-full top-0 sticky z-40 glass-header">
+<div class="flex justify-between items-center h-16 px-6 max-w-[1440px] mx-auto">
+<h1 class="text-xl font-bold tracking-tighter text-indigo-600">Kinetic Archive</h1>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100 transition-colors duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/20">
+<img alt="User profile and account settings" data-alt="close up professional headshot of a person with a friendly expression in a modern office environment with soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVNdA0gW29F1t1n7i8BoTxtq5XrxteLPVm9Ie10n5_Yp9IMdsG5Dn47GpqzoP67kSrCie9Of5T3khGTn-1IHTFbrzHlC3gHX1OQ6GLbFIQ1JGWX_f3mLC2yHz0mdi-sOK7VW_i3DeGNSBg7skkVaa2xrRJWwRRtzdE-DctUkayIcuUmQrkrq-QPUMshhB5Eqel1CtZDOc_kmJAk6ZOXbvmdyVr-b6UnGGfcqNSWmKTqNHg7Ql3ZGd6L5eqkE8VlLbUoaPOYe6YJY0"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[375px] mx-auto px-6 py-4">
+<!-- Search & Filter Section -->
+<section class="mb-8">
+<div class="relative mb-6">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/50" placeholder="Search tasks..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary text-sm font-medium whitespace-nowrap">All Tasks</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium whitespace-nowrap">Today</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium whitespace-nowrap">Upcoming</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium whitespace-nowrap">Completed</button>
+</div>
+</section>
+<!-- Dynamic Editorial Headline -->
+<div class="mb-6 editorial-gutter">
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-1">Focus</h2>
+<p class="text-on-surface-variant text-sm font-medium">You have 5 tasks pending today.</p>
+</div>
+<!-- Task List Grid (Bento/Card Style) -->
+<div class="space-y-3">
+<!-- Task Item 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl flex items-start gap-4 transition-transform active:scale-[0.98]">
+<div class="mt-1">
+<button class="w-6 h-6 rounded-lg border-2 border-primary/30 flex items-center justify-center hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary opacity-0" data-icon="check">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h3 class="font-semibold text-on-surface leading-snug">Design system audit for Archive project</h3>
+<div class="flex items-center gap-3 mt-2">
+<span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant px-2 py-0.5 rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-[12px]" data-icon="label">label</span>
+                            Design
+                        </span>
+<span class="text-[11px] font-medium text-primary">09:00 AM</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Task Item 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl flex items-start gap-4 transition-transform active:scale-[0.98]">
+<div class="mt-1">
+<button class="w-6 h-6 rounded-lg border-2 border-primary/30 flex items-center justify-center hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary opacity-0" data-icon="check">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h3 class="font-semibold text-on-surface leading-snug">Review quarterly stats with team</h3>
+<div class="flex items-center gap-3 mt-2">
+<span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant px-2 py-0.5 rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-[12px]" data-icon="label">label</span>
+                            Management
+                        </span>
+<span class="text-[11px] font-medium text-on-surface-variant/60">11:30 AM</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Task Item 3 (Completed state) -->
+<div class="bg-surface-container-low/50 p-5 rounded-xl flex items-start gap-4 opacity-70">
+<div class="mt-1">
+<div class="w-6 h-6 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-white" data-icon="check">check</span>
+</div>
+</div>
+<div class="flex-1">
+<h3 class="font-semibold text-on-surface line-through">Prepare weekly newsletter</h3>
+<div class="flex items-center gap-3 mt-2">
+<span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant px-2 py-0.5 rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-[12px]" data-icon="label">label</span>
+                            Marketing
+                        </span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="p-2 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Task Item 4 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl flex items-start gap-4 transition-transform active:scale-[0.98]">
+<div class="mt-1">
+<button class="w-6 h-6 rounded-lg border-2 border-primary/30 flex items-center justify-center hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary opacity-0" data-icon="check">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h3 class="font-semibold text-on-surface leading-snug">Update documentation for API</h3>
+<div class="flex items-center gap-3 mt-2">
+<span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant px-2 py-0.5 rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-[12px]" data-icon="label">label</span>
+                            Dev
+                        </span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-20 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary shadow-lg flex items-center justify-center active:scale-95 transition-transform duration-150 z-50">
+<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-[#faf8ff]/80 backdrop-blur-xl border-t border-slate-200/50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-50">
+<a class="flex flex-col items-center justify-center text-indigo-600 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="task_alt" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+<span class="font-['Inter'] text-[11px] font-medium">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 active:bg-slate-100 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-['Inter'] text-[11px] font-medium">Labels</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 active:bg-slate-100 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[11px] font-medium">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 active:bg-slate-100 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-medium">Account</span>
+</a>
+</nav>
+<!-- Task Creation Sheet (Visual Placeholder Only) -->
+<div class="hidden fixed inset-0 bg-on-surface/20 backdrop-blur-sm z-[60] items-end justify-center">
+<div class="bg-surface w-full rounded-t-3xl p-6 shadow-2xl max-w-[500px]">
+<div class="w-12 h-1 bg-outline-variant/30 rounded-full mx-auto mb-6"></div>
+<h3 class="text-xl font-bold mb-4">New Task</h3>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-base mb-4 focus:ring-0" placeholder="What needs to be done?" type="text"/>
+<div class="flex gap-2 mb-6">
+<button class="flex items-center gap-1 text-[12px] font-medium text-on-surface-variant px-3 py-1.5 rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span>
+                    Today
+                </button>
+<button class="flex items-center gap-1 text-[12px] font-medium text-on-surface-variant px-3 py-1.5 rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-[16px]" data-icon="flag">flag</span>
+                    Priority
+                </button>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-xl shadow-md">Create Task</button>
+</div>
+</div>
+</body></html>

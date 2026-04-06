@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic Archive - Labels Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#494b83",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#464554",
+                    "outline": "#767586",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed-variant": "#404178",
+                    "tertiary": "#904900",
+                    "surface-dim": "#d2d9f4",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-background": "#131b2e",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-surface": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#b55d00",
+                    "surface-container-low": "#f2f3ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary-fixed": "#13144a",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#575992",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "inverse-primary": "#c0c1ff",
+                    "secondary-fixed": "#e1e0ff",
+                    "primary-container": "#6063ee",
+                    "surface-tint": "#494bd6",
+                    "surface-variant": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eaedff",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "surface-bright": "#faf8ff",
+                    "outline-variant": "#c7c4d7",
+                    "inverse-surface": "#283044",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#fffbff",
+                    "primary": "#4648d4",
+                    "background": "#faf8ff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#bdbefe",
+                    "tertiary-fixed": "#ffdcc5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-gutter { padding-left: clamp(1rem, 5vw, 4rem); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopAppBar Execution -->
+<header class="w-full top-0 sticky z-40 bg-[#faf8ff] dark:bg-slate-900">
+<div class="hidden md:flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-indigo-600 dark:text-indigo-400">Kinetic Archive</span>
+<nav class="flex gap-6 items-center">
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 font-medium transition-colors duration-200" href="#">Tasks</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 font-medium transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 h-16 flex items-center" href="#">Labels</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 cursor-pointer">notifications</span>
+</div>
+<img alt="User profile and account settings" class="w-8 h-8 rounded-full border border-outline-variant/20 object-cover" data-alt="Close-up portrait of a professional woman with soft lighting in a high-end office environment, blurred background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0tPvWpLWip5kMIHe-6OWgcku8dkGDKoJttgF_KXYr_9hM7LftBJPqg0sFgwT1NvzHnTaoC5ExO31t1_TN8d2Nq3pyWxzmnVMeyG3Vg3F5EfHD_i21ENE5UQnk_F65U8aLdTJKgfW4IQxH4C79T-KjTJ0O5hSxxIm0ZciYWerJp8aaxhLeXH037uEb-NOmL4EiCplFjt56-bpPNb_16MxXBbUN47aijTZLMlLdXhTDJDISet0r3sKlIuPbD6uF5h4wId1MCzim8VA"/>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto flex min-h-[calc(100vh-4rem)]">
+<!-- Sidebar Navigation (Editorial Anchor) -->
+<aside class="hidden lg:flex flex-col w-64 bg-surface-dim/30 p-6 border-r border-outline-variant/10">
+<div class="mb-8">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4 px-2">Navigation</h3>
+<ul class="space-y-1">
+<li>
+<button class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-[20px]">inbox</span>
+<span class="font-medium text-sm">Inbox</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-[20px]">today</span>
+<span class="font-medium text-sm">Today</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-surface-container-lowest shadow-sm border-l-4 border-primary">
+<span class="material-symbols-outlined text-[20px] text-primary">label</span>
+<span class="font-semibold text-sm text-primary">Labels</span>
+</button>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4 px-2">Recent Labels</h3>
+<div class="space-y-3 px-3">
+<div class="flex items-center gap-3 text-sm text-on-surface-variant">
+<div class="w-2 h-2 rounded-full bg-blue-500"></div>
+<span>Productivity</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-on-surface-variant">
+<div class="w-2 h-2 rounded-full bg-orange-500"></div>
+<span>High Priority</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<section class="flex-1 p-8 editorial-gutter">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Labels</h1>
+<p class="text-on-surface-variant font-medium">Organize your archive with precision tokens.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="font-semibold">Create New Label</span>
+</button>
+</div>
+<!-- Bento Layout for Label Management -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Label List (Main Canvas) -->
+<div class="col-span-12 xl:col-span-8 space-y-3">
+<div class="flex items-center justify-between px-4 py-2 border-b border-outline-variant/10 text-xs font-bold text-on-surface-variant/50 uppercase tracking-widest">
+<span>Identity</span>
+<span>Task Frequency</span>
+</div>
+<!-- Label Row Item -->
+<div class="group flex items-center justify-between p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-4 h-4 rounded-full bg-indigo-500 shadow-inner"></div>
+<span class="text-lg font-semibold text-on-surface">Design System</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-on-surface-variant font-medium bg-surface-container-high px-3 py-1 rounded-full text-sm">24 tasks</span>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-white rounded-lg text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 hover:bg-white rounded-lg text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
+</div>
+<!-- Label Row Item -->
+<div class="group flex items-center justify-between p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-4 h-4 rounded-full bg-emerald-500 shadow-inner"></div>
+<span class="text-lg font-semibold text-on-surface">Sprint Planning</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-on-surface-variant font-medium bg-surface-container-high px-3 py-1 rounded-full text-sm">12 tasks</span>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-white rounded-lg text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 hover:bg-white rounded-lg text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
+</div>
+<!-- Label Row Item -->
+<div class="group flex items-center justify-between p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-4 h-4 rounded-full bg-amber-500 shadow-inner"></div>
+<span class="text-lg font-semibold text-on-surface">Personal</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-on-surface-variant font-medium bg-surface-container-high px-3 py-1 rounded-full text-sm">8 tasks</span>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-white rounded-lg text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-2 hover:bg-white rounded-lg text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Create/Edit Label Modal (Integrated Sidebar) -->
+<div class="col-span-12 xl:col-span-4">
+<div class="p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm sticky top-24">
+<h2 class="text-xl font-bold mb-6 text-on-surface">Create New Label</h2>
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-semibold text-on-surface-variant mb-2">Label Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:bg-white transition-all text-on-surface" placeholder="e.g. Work, Urgent..." type="text"/>
+</div>
+<div>
+<label class="block text-sm font-semibold text-on-surface-variant mb-3">Color Palette</label>
+<div class="grid grid-cols-6 gap-3 mb-4">
+<button class="w-full aspect-square rounded-full bg-rose-500 ring-2 ring-offset-2 ring-transparent hover:ring-rose-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-orange-500 ring-2 ring-offset-2 ring-transparent hover:ring-orange-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-amber-500 ring-2 ring-offset-2 ring-transparent hover:ring-amber-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-emerald-500 ring-2 ring-offset-2 ring-transparent hover:ring-emerald-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-teal-500 ring-2 ring-offset-2 ring-transparent hover:ring-teal-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-cyan-500 ring-2 ring-offset-2 ring-transparent hover:ring-cyan-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-blue-500 ring-2 ring-offset-2 ring-transparent hover:ring-blue-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-indigo-500 ring-4 ring-offset-2 ring-indigo-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-violet-500 ring-2 ring-offset-2 ring-transparent hover:ring-violet-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-purple-500 ring-2 ring-offset-2 ring-transparent hover:ring-purple-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-pink-500 ring-2 ring-offset-2 ring-transparent hover:ring-pink-200 transition-all"></button>
+<button class="w-full aspect-square rounded-full bg-slate-500 ring-2 ring-offset-2 ring-transparent hover:ring-slate-200 transition-all"></button>
+</div>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-mono text-sm">#</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-primary font-mono text-sm" type="text" value="4648d4"/>
+</div>
+</div>
+<div class="pt-4 flex flex-col gap-3">
+<button class="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-container transition-colors shadow-lg shadow-primary/10">Save Label</button>
+<button class="w-full py-3 text-on-surface-variant font-semibold hover:bg-surface-container-high rounded-xl transition-colors">Discard changes</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Execution for Mobile -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center h-16 pb-safe px-4 bg-[#faf8ff]/80 dark:bg-slate-900/80 backdrop-blur-xl z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] border-t border-slate-200/50 dark:border-slate-800/50">
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+<span class="font-['Inter'] text-[11px] font-medium">Tasks</span>
+</button>
+<button class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="label" style="font-variation-settings: 'FILL' 1;">label</span>
+<span class="font-['Inter'] text-[11px] font-medium">Labels</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[11px] font-medium">Stats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-medium">Account</span>
+</button>
+</nav>
+</body></html>
