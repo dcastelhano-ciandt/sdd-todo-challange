@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { TaskApiService } from './task-api.service';
-import type { Task, TaskStatus } from '../../shared/models/task.model';
+import type { Task } from '../../shared/models/task.model';
 
 @Injectable({ providedIn: 'root' })
 export class TaskStateService {
@@ -10,17 +10,21 @@ export class TaskStateService {
   private readonly _tasks = signal<Task[]>([]);
   private readonly _loading = signal<boolean>(false);
 
-  readonly tasks = this._tasks.asReadonly();
+  private readonly _allTasks = this._tasks.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly filter = signal<'all' | 'pending' | 'completed'>('all');
 
+  readonly tasks = computed(() => {
+    const f = this.filter();
+    const all = this._allTasks();
+    if (f === 'all') return all;
+    return all.filter((t) => (f === 'completed' ? t.completed : !t.completed));
+  });
+
   loadTasks(): Observable<void> {
     this._loading.set(true);
-    const currentFilter = this.filter();
-    const status: TaskStatus | undefined =
-      currentFilter === 'all' ? undefined : currentFilter;
 
-    return this.taskApi.listTasks(status).pipe(
+    return this.taskApi.listTasks(undefined).pipe(
       tap((tasks) => {
         this._tasks.set(tasks);
         this._loading.set(false);
