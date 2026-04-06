@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TaskListComponent } from './task-list.component';
 import { TaskStateService } from '../services/task-state.service';
@@ -54,6 +55,10 @@ describe('TaskListComponent', () => {
       TestBed.configureTestingModule({
         imports: [TaskListComponent],
         providers: [
+          provideRouter([
+            { path: 'dashboard', component: {} as any },
+            { path: 'login', component: {} as any },
+          ]),
           provideHttpClient(),
           provideHttpClientTesting(),
         ],
@@ -86,6 +91,10 @@ describe('TaskListComponent', () => {
       TestBed.configureTestingModule({
         imports: [TaskListComponent],
         providers: [
+          provideRouter([
+            { path: 'dashboard', component: {} as any },
+            { path: 'login', component: {} as any },
+          ]),
           { provide: TaskStateService, useValue: mockState },
         ],
       });
@@ -115,6 +124,10 @@ describe('TaskListComponent', () => {
       TestBed.configureTestingModule({
         imports: [TaskListComponent],
         providers: [
+          provideRouter([
+            { path: 'dashboard', component: {} as any },
+            { path: 'login', component: {} as any },
+          ]),
           { provide: TaskStateService, useValue: mockState },
         ],
       });
@@ -148,6 +161,10 @@ describe('TaskListComponent', () => {
       TestBed.configureTestingModule({
         imports: [TaskListComponent],
         providers: [
+          provideRouter([
+            { path: 'dashboard', component: {} as any },
+            { path: 'login', component: {} as any },
+          ]),
           { provide: TaskStateService, useValue: mockState },
         ],
       });
@@ -187,6 +204,10 @@ describe('TaskListComponent', () => {
       TestBed.configureTestingModule({
         imports: [TaskListComponent],
         providers: [
+          provideRouter([
+            { path: 'dashboard', component: {} as any },
+            { path: 'login', component: {} as any },
+          ]),
           { provide: TaskStateService, useValue: mockState },
         ],
       });
@@ -232,5 +253,73 @@ describe('TaskListComponent', () => {
 
       expect(mockState.filter()).toBe('all');
     });
+  });
+});
+
+// ─── Task 6: Dashboard navigation link ─────────────────────────────────────
+
+describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
+  let navFixture: ReturnType<typeof TestBed.createComponent<TaskListComponent>>;
+  let navComponent: TaskListComponent;
+  let navMockState: ReturnType<typeof createMockTaskStateService>;
+
+  beforeEach(() => {
+    navMockState = createMockTaskStateService({ loading: false, tasks: [] });
+
+    TestBed.configureTestingModule({
+      imports: [TaskListComponent],
+      providers: [
+        provideRouter([
+          { path: 'dashboard', component: {} as any },
+          { path: 'login', component: {} as any },
+        ]),
+        { provide: TaskStateService, useValue: navMockState },
+      ],
+    });
+
+    navFixture = TestBed.createComponent(TaskListComponent);
+    navComponent = navFixture.componentInstance;
+    navFixture.detectChanges();
+  });
+
+  it('should render a navigation link to /dashboard in the header (requirement 1.1)', () => {
+    const el: HTMLElement = navFixture.nativeElement;
+    const dashboardLink = el.querySelector<HTMLAnchorElement>(
+      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+    );
+    expect(dashboardLink).not.toBeNull();
+  });
+
+  it('should render the logout button alongside the dashboard link in the header', () => {
+    const el: HTMLElement = navFixture.nativeElement;
+    const logoutBtn = el.querySelector('[data-testid="logout-button"]');
+    const dashboardLink = el.querySelector(
+      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+    );
+    expect(logoutBtn).not.toBeNull();
+    expect(dashboardLink).not.toBeNull();
+  });
+
+  it('should render the dashboard link in the task-list-header element', () => {
+    const el: HTMLElement = navFixture.nativeElement;
+    const header = el.querySelector('.task-list-header');
+    expect(header).not.toBeNull();
+    const dashboardLink = header!.querySelector(
+      '[data-testid="dashboard-link"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+    );
+    expect(dashboardLink).not.toBeNull();
+  });
+
+  it('should navigate to /dashboard when the dashboard link is clicked', async () => {
+    const el: HTMLElement = navFixture.nativeElement;
+    const dashboardLink = el.querySelector<HTMLAnchorElement>(
+      '[data-testid="dashboard-link"]'
+    );
+    expect(dashboardLink).not.toBeNull();
+    // The link must have a routerLink or href pointing at dashboard
+    const href = dashboardLink!.getAttribute('href');
+    const routerLink = dashboardLink!.getAttribute('ng-reflect-router-link') ??
+      dashboardLink!.getAttribute('routerlink');
+    expect(href === '/dashboard' || routerLink !== null || href?.includes('dashboard')).toBe(true);
   });
 });

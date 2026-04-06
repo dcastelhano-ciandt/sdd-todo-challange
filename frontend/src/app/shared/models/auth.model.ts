@@ -3,6 +3,10 @@ export interface TokenResponse {
   token_type: string;
 }
 
+export interface UserProfile {
+  email: string;
+}
+
 export interface ValidationErrorDetail {
   loc: string[];
   msg: string;

@@ -124,4 +124,46 @@ describe('authInterceptor', () => {
       expect(navigateSpy).not.toHaveBeenCalled();
     });
   });
+
+  // ─── Task 6: session expiry on dashboard page (requirement 5.3) ─────────────
+
+  describe('session expiry on dashboard page (requirement 5.3)', () => {
+    it('should call clearSession when a 401 is received on a non-auth endpoint (covers dashboard)', () => {
+      authState.setToken('valid-token');
+      const clearSessionSpy = vi.spyOn(authState, 'clearSession');
+
+      // Simulate a request that would originate from the dashboard page
+      // (e.g., GET /api/v1/auth/me or any non-auth endpoint)
+      httpClient.get('/api/v1/profile').subscribe({ error: () => {} });
+
+      const req = httpTestingController.expectOne('/api/v1/profile');
+      req.flush({ detail: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
+
+      expect(clearSessionSpy).toHaveBeenCalled();
+    });
+
+    it('should navigate to /login when a 401 is received on a non-auth endpoint (covers dashboard)', () => {
+      authState.setToken('valid-token');
+      const navigateSpy = vi.spyOn(router, 'navigate');
+
+      httpClient.get('/api/v1/profile').subscribe({ error: () => {} });
+
+      const req = httpTestingController.expectOne('/api/v1/profile');
+      req.flush({ detail: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    });
+
+    it('should NOT call clearSession on a 401 from an auth endpoint (login/register excluded)', () => {
+      authState.setToken('valid-token');
+      const clearSessionSpy = vi.spyOn(authState, 'clearSession');
+
+      httpClient.post('/api/v1/auth/change-password', {}).subscribe({ error: () => {} });
+
+      const req = httpTestingController.expectOne('/api/v1/auth/change-password');
+      req.flush({ detail: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
+
+      expect(clearSessionSpy).not.toHaveBeenCalled();
+    });
+  });
 });

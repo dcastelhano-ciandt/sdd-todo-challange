@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TaskStateService } from '../services/task-state.service';
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { AuthStateService } from '../../auth/services/auth-state.service';
@@ -9,11 +9,14 @@ import { AuthStateService } from '../../auth/services/auth-state.service';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TaskItemComponent],
+  imports: [CommonModule, FormsModule, TaskItemComponent, RouterLink],
   template: `
     <div class="task-list-container">
       <div class="task-list-header">
         <h2>My Tasks</h2>
+        <a routerLink="/dashboard" data-testid="dashboard-link" class="btn-logout">
+          Account
+        </a>
         <button type="button" class="btn-logout" data-testid="logout-button" (click)="logout()">
           Logout
         </button>

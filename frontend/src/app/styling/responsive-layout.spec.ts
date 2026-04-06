@@ -136,6 +136,10 @@ describe('11.1 Responsive Layout', () => {
       await TestBed.configureTestingModule({
         imports: [TaskListComponent],
         providers: [
+          provideRouter([
+            { path: 'dashboard', component: {} as any },
+            { path: 'login', component: {} as any },
+          ]),
           { provide: TaskStateService, useValue: mockState },
         ],
       }).compileComponents();

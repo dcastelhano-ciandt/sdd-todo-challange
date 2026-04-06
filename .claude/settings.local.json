@@ -85,7 +85,18 @@
       "Bash(curl -s http://localhost:4200)",
       "Bash(curl -s --connect-timeout 2 http://localhost:4200)",
       "Bash(echo \"exit: $?\")",
-      "Bash(curl -s --connect-timeout 3 -I http://localhost:4200)"
+      "Bash(curl -s --connect-timeout 3 -I http://localhost:4200)",
+      "Bash(git stash:*)",
+      "Bash(python -m pytest tests/test_task_cp3_auth_router_change_password.py -v --tb=short)",
+      "Bash(grep -v \"^$\")",
+      "Bash(python -c \"from app.services.auth_service import AuthService; print\\(dir\\(AuthService\\)\\)\")",
+      "Bash(python -m pytest tests/test_task_cp3_auth_router_change_password.py tests/test_task_6_1_auth_router.py -v --tb=short)",
+      "Bash(python -m pytest tests/ --ignore=tests/test_task_12_3_integration.py -q)",
+      "Bash(ls src/test*)",
+      "Bash(ls src/setup*)",
+      "Bash(grep -v \"^$\\\\|^\\\\[\")",
+      "Bash(python -m pytest tests/test_task_7_2_integration_change_password.py -v)",
+      "Bash(python -m pytest --tb=short -q)"
     ]
   }
 }

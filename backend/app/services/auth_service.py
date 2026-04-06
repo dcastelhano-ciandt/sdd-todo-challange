@@ -1,5 +1,5 @@
 """
-AuthService — business logic for authentication.
+AuthService -- business logic for authentication.
 
 Responsibilities:
 - Password hashing (bcrypt via passlib CryptContext)
@@ -7,6 +7,8 @@ Responsibilities:
 - JWT token decoding with expiry and blacklist validation
 - User registration and login
 - Logout with token blacklist management
+- Password change with atomic DB write (update + blacklist in one commit)
+- User email retrieval
 """
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -17,7 +19,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.exceptions import AuthenticationError, ConflictError, ValidationError
+from app.core.exceptions import AuthenticationError, ConflictError, NotFoundError, ValidationError
 from app.models.token_blacklist import TokenBlacklist
 from app.repositories.user_repository import UserRepository
 
@@ -101,7 +103,7 @@ class AuthService:
     def login(self, email: str, password: str):
         """Authenticate an existing user and return a TokenResponse.
 
-        Raises AuthenticationError for any mismatch — never discloses whether
+        Raises AuthenticationError for any mismatch -- never discloses whether
         the email or the password was incorrect.
         """
         user = self.user_repo.find_by_email(email)
@@ -121,6 +123,79 @@ class AuthService:
         self.db.add(entry)
         self.db.commit()
         self._prune_expired_blacklist()
+
+    # -----------------------------------------------------------------------
+    # Password change
+    # -----------------------------------------------------------------------
+
+    def change_password(
+        self,
+        user_id: str,
+        jti: str,
+        expires_at: datetime,
+        current_password: str,
+        new_password: str,
+    ) -> Dict[str, str]:
+        """Change the user's password, blacklist the old JWT, and issue a new token.
+
+        Steps (within a single transaction):
+          1. Load the user; raise NotFoundError if not found.
+          2. Verify current_password against the stored bcrypt hash;
+             raise AuthenticationError if it does not match.
+          3. Hash the new password.
+          4. Persist the new hash and blacklist the old JTI in one commit.
+          5. Return a new TokenResponse.
+
+        Raises:
+          - NotFoundError if user_id does not exist.
+          - AuthenticationError if current_password is incorrect.
+        """
+        # 1. Load user
+        user = self.user_repo.find_by_id(user_id)
+        if user is None:
+            raise NotFoundError(f"User with id '{user_id}' not found.")
+
+        # 2. Verify current password (constant-time bcrypt comparison)
+        if not self.verify_password(current_password, user.hashed_password):
+            raise AuthenticationError("Current password is incorrect.")
+
+        # 3. Hash the new password
+        new_hash = self.hash_password(new_password)
+
+        # 4. Persist password update and token blacklist in a single transaction.
+        #    We update the ORM object directly (without an intermediate commit)
+        #    then add the blacklist entry, and commit once.  If anything after
+        #    the db.add() raises before db.commit(), neither write will land.
+        try:
+            user.hashed_password = new_hash
+            blacklist_entry = TokenBlacklist(jti=jti, expires_at=expires_at)
+            self.db.add(blacklist_entry)
+            self.db.commit()
+            self.db.refresh(user)
+        except Exception:
+            self.db.rollback()
+            raise
+
+        # Lazy-prune expired blacklist entries (best-effort; non-transactional)
+        self._prune_expired_blacklist()
+
+        # 5. Issue and return a new token
+        new_token = self.create_access_token(user_id=user_id)
+        return _build_token_response(new_token)
+
+    # -----------------------------------------------------------------------
+    # Profile helpers
+    # -----------------------------------------------------------------------
+
+    def get_user_email(self, user_id: str) -> str:
+        """Return the email address for the given user_id.
+
+        Raises NotFoundError if the user does not exist.
+        """
+        user = self.user_repo.find_by_id(user_id)
+        if user is None:
+            raise NotFoundError(f"User with id '{user_id}' not found.")
+        return user.email
 
     # -----------------------------------------------------------------------
     # Private helpers
