@@ -96,7 +96,22 @@
       "Bash(ls src/setup*)",
       "Bash(grep -v \"^$\\\\|^\\\\[\")",
       "Bash(python -m pytest tests/test_task_7_2_integration_change_password.py -v)",
-      "Bash(python -m pytest --tb=short -q)"
+      "Bash(python -m pytest --tb=short -q)",
+      "Skill(sdd:spec-quick)",
+      "Skill(sdd:spec-requirements)",
+      "Skill(sdd:spec-design)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('projects',{}\\).get\\('todo-app',{}\\).get\\('architect',{}\\).get\\('test',{}\\), indent=2\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(list\\(d.get\\('projects',{}\\).keys\\(\\)\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); projects=d.get\\('projects',{}\\); [print\\(k, json.dumps\\(list\\(projects[k].get\\('architect',{}\\).keys\\(\\)\\)\\)\\) for k in projects]\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); test=d['projects']['frontend']['architect']['test']; print\\(json.dumps\\(test, indent=2\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('@angular/build', d.get\\('vitest', {}\\)\\), indent=2\\)\\)\")",
+      "Bash(ls /home/dcastelhano/elevate/projetos/todo_app/frontend/src/test*.ts)",
+      "Bash(ls /home/dcastelhano/elevate/projetos/todo_app/frontend/src/setup*.ts)",
+      "Bash(python -m pytest tests/test_due_dates_1_1_migration.py tests/test_due_dates_2_1_schemas.py tests/test_due_dates_3_1_repository.py tests/test_due_dates_4_1_service.py tests/test_due_dates_5_1_router.py tests/test_due_dates_11_integration.py -v --tb=short)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('scripts',{}\\), indent=2\\)\\); print\\(json.dumps\\(d.get\\('vitest',{}\\), indent=2\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); proj = list\\(d['projects'].keys\\(\\)\\)[0]; print\\(json.dumps\\(d['projects'][proj].get\\('architect',{}\\).get\\('test',{}\\), indent=2\\)\\)\")",
+      "Bash(ls *.ts *.json *.mts)",
+      "Bash(ls *.ts *.json)"
     ]
   }
 }

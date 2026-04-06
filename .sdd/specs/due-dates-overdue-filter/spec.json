@@ -1,0 +1,22 @@
+{
+  "feature_name": "due-dates-overdue-filter",
+  "created_at": "2026-04-06T17:50:00Z",
+  "updated_at": "2026-04-06T18:10:00Z",
+  "language": "en",
+  "phase": "implementation-complete",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": true
+}

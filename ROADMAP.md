@@ -40,27 +40,27 @@
 
 ### Backend
 
-- [ ] Add `due_date: DATETIME | NULL` column to the `tasks` table via a new Alembic migration
-- [ ] Update `TaskResponse` schema: add optional `due_date: datetime | None`
-- [ ] Update `CreateTaskRequest` schema: add optional `due_date: datetime | None`
-- [ ] Update `UpdateTaskRequest` schema: add optional `due_date: datetime | None`
-- [ ] Update `TaskService.create_task()` to accept and persist `due_date`
-- [ ] Update `TaskService.update_task()` to accept and persist `due_date`
-- [ ] Add `overdue` option to the status filter: tasks where `due_date < now()` AND `completed = false`
-- [ ] Update `TaskRepository.list_by_user()` to handle the new `overdue` filter variant
-- [ ] Add unit tests: create with due date, update due date, overdue filter returns correct rows
+- [X] Add `due_date: DATETIME | NULL` column to the `tasks` table via a new Alembic migration
+- [X] Update `TaskResponse` schema: add optional `due_date: datetime | None`
+- [X] Update `CreateTaskRequest` schema: add optional `due_date: datetime | None`
+- [X] Update `UpdateTaskRequest` schema: add optional `due_date: datetime | None`
+- [X] Update `TaskService.create_task()` to accept and persist `due_date`
+- [X] Update `TaskService.update_task()` to accept and persist `due_date`
+- [X] Add `overdue` option to the status filter: tasks where `due_date < now()` AND `completed = false`
+- [X] Update `TaskRepository.list_by_user()` to handle the new `overdue` filter variant
+- [X] Add unit tests: create with due date, update due date, overdue filter returns correct rows
 
 ### Frontend
 
-- [ ] Add `due_date` field to the `Task` model (`string | null`, ISO 8601)
-- [ ] Add a date picker input to `TaskItemComponent` edit mode (use `<input type="date">`)
-- [ ] Show due date as a subtle label below the task title when set (`due: Apr 10`)
-- [ ] Highlight overdue tasks with a red/orange accent (CSS class `task--overdue` applied when `due_date < today && !completed`)
-- [ ] Add "Overdue" button to the filter controls in `TaskListComponent`
-- [ ] Update `TaskApiService.updateTask()` to send `due_date` in the request body
-- [ ] Update `TaskStateService` filter type: `'all' | 'pending' | 'completed' | 'overdue'`
-- [ ] Update computed `tasks` signal to handle the `overdue` filter client-side
-- [ ] Add e2e tests: set due date → displayed, overdue task gets red styling, overdue filter works
+- [X] Add `due_date` field to the `Task` model (`string | null`, ISO 8601)
+- [X] Add a date picker input to `TaskItemComponent` edit mode (use `<input type="date">`)
+- [X] Show due date as a subtle label below the task title when set (`due: Apr 10`)
+- [X] Highlight overdue tasks with a red/orange accent (CSS class `task--overdue` applied when `due_date < today && !completed`)
+- [X] Add "Overdue" button to the filter controls in `TaskListComponent`
+- [X] Update `TaskApiService.updateTask()` to send `due_date` in the request body
+- [X] Update `TaskStateService` filter type: `'all' | 'pending' | 'completed' | 'overdue'`
+- [X] Update computed `tasks` signal to handle the `overdue` filter client-side
+- [X] Add e2e tests: set due date → displayed, overdue task gets red styling, overdue filter works
 
 ---
 
