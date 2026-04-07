@@ -17,8 +17,10 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # App source
 COPY app ${APP_HOME}/app
+COPY alembic.ini ${APP_HOME}/alembic.ini
+COPY alembic ${APP_HOME}/alembic
 
 EXPOSE ${PORT}
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD sh -c 'uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}'
 
