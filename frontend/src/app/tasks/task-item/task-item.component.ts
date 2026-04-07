@@ -8,80 +8,57 @@ import { TaskStateService, isOverdue } from '../services/task-state.service';
   selector: 'app-task-item',
   standalone: true,
   imports: [CommonModule, FormsModule, DatePipe],
-  styles: [`
-    .task-title.completed {
-      text-decoration: line-through;
-      color: #888;
-    }
-    .due-date-label {
-      font-size: 0.85em;
-      color: #555;
-      margin-left: 0.5em;
-    }
-    .overdue-indicator {
-      color: #c0392b;
-      font-weight: bold;
-      text-decoration: underline;
-      margin-left: 0.5em;
-    }
-    .task--overdue .task-title {
-      color: #c0392b;
-    }
-  `],
+  styles: [
+    `
+      .task-title.completed {
+        text-decoration: line-through;
+        color: #888;
+      }
+      .due-date-label {
+        font-size: 0.85em;
+        color: #555;
+        margin-left: 0.5em;
+      }
+      .overdue-indicator {
+        color: #c0392b;
+        font-weight: bold;
+        text-decoration: underline;
+        margin-left: 0.5em;
+      }
+      .task--overdue .task-title {
+        color: #c0392b;
+      }
+    `,
+  ],
   template: `
-    <div class="task-item"
-         [class.task--overdue]="taskIsOverdue"
-         data-testid="task-item">
+    <div class="task-item" [class.task--overdue]="taskIsOverdue" data-testid="task-item">
       <ng-container *ngIf="!editing">
-        <span
-          data-testid="task-title"
-          class="task-title"
-          [class.completed]="task.completed"
-        >{{ task.title }}</span>
+        <span data-testid="task-title" class="task-title" [class.completed]="task.completed">{{
+          task.title
+        }}</span>
 
         <span
           *ngIf="task.due_date"
           class="due-date-label"
-          [attr.aria-label]="'Due: ' + (task.due_date | date:'MMM d, y')"
-        >{{ task.due_date | date:'MMM d, y' }}</span>
-
-        <span
-          *ngIf="taskIsOverdue"
-          class="overdue-indicator"
-          aria-label="Overdue"
-          role="img"
-        >&#9888; Overdue</span>
-
-        <button
-          data-testid="toggle-completion"
-          (click)="onToggle()"
-          type="button"
+          [attr.aria-label]="'Due: ' + (task.due_date | date: 'MMM d, y')"
+          >{{ task.due_date | date: 'MMM d, y' }}</span
         >
+
+        <span *ngIf="taskIsOverdue" class="overdue-indicator" aria-label="Overdue" role="img"
+          >&#9888; Overdue</span
+        >
+
+        <button data-testid="toggle-completion" (click)="onToggle()" type="button">
           {{ task.completed ? 'Reopen' : 'Complete' }}
         </button>
 
-        <button
-          data-testid="edit-button"
-          (click)="startEditing()"
-          type="button"
-        >
-          Edit
-        </button>
+        <button data-testid="edit-button" (click)="startEditing()" type="button">Edit</button>
 
-        <button
-          data-testid="delete-button"
-          (click)="onDelete()"
-          type="button"
-        >
-          Delete
-        </button>
+        <button data-testid="delete-button" (click)="onDelete()" type="button">Delete</button>
       </ng-container>
 
       <ng-container *ngIf="editing">
-        <form
-          data-testid="edit-form"
-          (submit)="onSubmitEdit($event)"
-        >
+        <form data-testid="edit-form" (submit)="onSubmitEdit($event)">
           <input
             data-testid="edit-input"
             type="text"
@@ -152,7 +129,6 @@ export class TaskItemComponent {
   }
 
   onDelete(): void {
-    if (!confirm(`Delete "${this.task.title}"?`)) return;
     this.taskState.deleteTask(this.task.id).subscribe();
   }
 }

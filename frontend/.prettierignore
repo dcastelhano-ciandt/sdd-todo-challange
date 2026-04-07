@@ -1,0 +1,3 @@
+# Ignore prototype UI assets from Google Stitch
+src/ui/**
+

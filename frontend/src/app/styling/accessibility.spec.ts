@@ -183,9 +183,7 @@ describe('11.2 Touch-Friendly Interactive Elements and Accessibility', () => {
       mockState = createMockTaskStateService();
       await TestBed.configureTestingModule({
         imports: [TaskItemComponent],
-        providers: [
-          { provide: TaskStateService, useValue: mockState },
-        ],
+        providers: [{ provide: TaskStateService, useValue: mockState }],
       }).compileComponents();
     });
 
@@ -224,7 +222,9 @@ describe('11.2 Touch-Friendly Interactive Elements and Accessibility', () => {
       fixture.componentInstance.task = TASK_PENDING;
       fixture.detectChanges();
       const el: HTMLElement = fixture.nativeElement;
-      const buttons = el.querySelectorAll('[data-testid="toggle-completion"], [data-testid="edit-button"], [data-testid="delete-button"]');
+      const buttons = el.querySelectorAll(
+        '[data-testid="toggle-completion"], [data-testid="edit-button"], [data-testid="delete-button"]',
+      );
       buttons.forEach((btn) => {
         expect(btn.tagName.toLowerCase()).toBe('button');
       });

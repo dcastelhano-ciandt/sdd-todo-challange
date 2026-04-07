@@ -252,9 +252,7 @@ function createMockStateForItem() {
     overdueCount: signal<number>(0).asReadonly(),
     loadTasks: vi.fn(() => of(undefined as unknown as void)),
     createTask: vi.fn((title: string) => of({ ...TASK_PENDING, title })),
-    updateTask: vi.fn((taskId: string, title: string) =>
-      of({ ...TASK_PENDING, title }),
-    ),
+    updateTask: vi.fn((taskId: string, title: string) => of({ ...TASK_PENDING, title })),
     toggleCompletion: vi.fn((taskId: string) =>
       of({ ...TASK_PENDING, completed: !TASK_PENDING.completed }),
     ),

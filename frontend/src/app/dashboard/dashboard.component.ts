@@ -75,7 +75,6 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
         <h3>Change Password</h3>
 
         <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
-
           <div class="field">
             <label for="currentPassword">Current Password</label>
             <input
@@ -88,14 +87,20 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
             <span
               class="field-error"
               data-testid="current-password-required-error"
-              *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.hasError('required')"
+              *ngIf="
+                changePasswordForm.get('currentPassword')?.touched &&
+                changePasswordForm.get('currentPassword')?.hasError('required')
+              "
             >
               Current password is required.
             </span>
             <span
               class="field-error"
               data-testid="current-password-incorrect-error"
-              *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.hasError('incorrectPassword')"
+              *ngIf="
+                changePasswordForm.get('currentPassword')?.touched &&
+                changePasswordForm.get('currentPassword')?.hasError('incorrectPassword')
+              "
             >
               The current password you entered is incorrect.
             </span>
@@ -113,14 +118,20 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
             <span
               class="field-error"
               data-testid="new-password-required-error"
-              *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('required')"
+              *ngIf="
+                changePasswordForm.get('newPassword')?.touched &&
+                changePasswordForm.get('newPassword')?.hasError('required')
+              "
             >
               New password is required.
             </span>
             <span
               class="field-error"
               data-testid="new-password-minlength-error"
-              *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('minlength')"
+              *ngIf="
+                changePasswordForm.get('newPassword')?.touched &&
+                changePasswordForm.get('newPassword')?.hasError('minlength')
+              "
             >
               Password must be at least 8 characters.
             </span>
@@ -138,14 +149,20 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
             <span
               class="field-error"
               data-testid="confirm-password-required-error"
-              *ngIf="changePasswordForm.get('confirmNewPassword')?.touched && changePasswordForm.get('confirmNewPassword')?.hasError('required')"
+              *ngIf="
+                changePasswordForm.get('confirmNewPassword')?.touched &&
+                changePasswordForm.get('confirmNewPassword')?.hasError('required')
+              "
             >
               Confirm new password is required.
             </span>
             <span
               class="field-error"
               data-testid="passwords-mismatch-error"
-              *ngIf="changePasswordForm.get('confirmNewPassword')?.touched && changePasswordForm.hasError('passwordsMismatch')"
+              *ngIf="
+                changePasswordForm.get('confirmNewPassword')?.touched &&
+                changePasswordForm.hasError('passwordsMismatch')
+              "
             >
               New password and confirmation do not match.
             </span>
@@ -159,15 +176,9 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
             {{ submitting ? 'Changing password...' : 'Change Password' }}
           </button>
 
-          <div
-            *ngIf="serverError"
-            class="server-error"
-            data-testid="server-error"
-            role="alert"
-          >
+          <div *ngIf="serverError" class="server-error" data-testid="server-error" role="alert">
             {{ serverError }}
           </div>
-
         </form>
       </div>
     </div>
@@ -181,6 +192,7 @@ export class DashboardComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   emailControl = new FormControl({ value: '', disabled: true });
+  email: string | null = null;
   profileLoadError: string | null = null;
   submitting = false;
   successMessage: string | null = null;
@@ -192,13 +204,14 @@ export class DashboardComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmNewPassword: ['', [Validators.required, Validators.minLength(8)]],
     },
-    { validators: passwordsMatchValidator }
+    { validators: passwordsMatchValidator },
   );
 
   ngOnInit(): void {
     this.authApi.getProfile().subscribe({
       next: (profile) => {
         this.emailControl.setValue(profile.email);
+        this.email = profile.email;
       },
       error: (_err: HttpErrorResponse) => {
         this.profileLoadError =
@@ -220,14 +233,12 @@ export class DashboardComponent implements OnInit {
     const newPassword: string = this.changePasswordForm.get('newPassword')!.value;
 
     this.authApi.changePassword(currentPassword, newPassword).subscribe({
-      next: (_newToken: string) => {
+      next: (newToken: string) => {
+        this.authState.setToken(newToken);
+        this.changePasswordForm.reset();
         this.successMessage = 'Password changed successfully.';
         this.submitting = false;
         this.cdr.detectChanges();
-        setTimeout(() => {
-          this.authState.clearSession();
-          this.router.navigate(['/login']);
-        }, 3000);
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 401) {

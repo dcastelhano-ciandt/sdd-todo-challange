@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type {
-  Task,
-  CreateTaskRequest,
-  UpdateTaskRequest,
-  TaskStatus,
-} from './task.model';
+import type { Task, CreateTaskRequest, UpdateTaskRequest, TaskStatus } from './task.model';
 
 describe('Task model', () => {
   it('should allow a valid Task object', () => {
