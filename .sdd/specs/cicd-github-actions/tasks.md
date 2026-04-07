@@ -31,6 +31,11 @@
   - List required env vars (SECRET_KEY, DATABASE_URL, CORS origin for Vercel domain)
   - Note release flow: tag `vX.Y.Z` for immutable deploy image
 
-- [ ] 7. Optional: docs
+- [ ] 7. Lint/format policy
+  - Ensure `frontend/package.json` defines `lint`, `lint:types`, `lint:format` per design
+  - Ensure `.prettierignore` excludes `src/ui/**`
+  - CI must fail on formatting drift; contributors run `npm run format` locally
+
+- [ ] 8. Optional: docs
   - Add `docs/ci-cd.md` summarizing workflows, secrets, and release process
 

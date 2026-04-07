@@ -7,7 +7,7 @@
 - Prefer deploying from new Git tags for “release” builds.
 
 ## Scope
-- CI: run backend unit/integration tests and frontend unit/E2E tests on PRs and on pushes to `main`, each in split workflows (backend-only or frontend-only) based on path filters.
+- CI: run backend unit/integration tests and frontend unit/E2E tests on PRs and on pushes to `main`, each in split workflows (backend-only or frontend-only) based on path filters. Enforce type-check + Prettier check as lint gate.
 - Build and publish backend Docker images only on Git tag pushes; CI (PR/main) builds image to validate but does not push.
 - Coordinate environment variables between services (API base URL, secrets).
 - Document manual Railway deployment workflow consuming the pushed Docker image.
@@ -27,6 +27,7 @@
    - Build container image using repository `Dockerfile`.
 3. Frontend CI steps
    - Install Node deps; run lint/unit tests (and optional E2E where feasible in CI).
+   - Lint runs `npm run lint` which performs `tsc --noEmit` and `prettier -c` for `src/**/*`. Prototype assets under `src/ui/**` are ignored via `.prettierignore`.
 4. Docker image publishing
    - Push to public Docker Hub repo `DOCKERHUB_ORG/PROJECT` with tags: `latest` and `<git-sha>` (and `<git-tag>` when building from tag).
    - Authenticate via GitHub Actions secrets.

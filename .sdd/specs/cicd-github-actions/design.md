@@ -26,6 +26,10 @@ Backend container images are published to Docker Hub. Railway deployment is manu
 - Jobs:
   - Lint and tests:
     - Node 20, npm cache, `npm ci`, `npm run lint`, and `npm test`
+    - Lint contract:
+      - `npm run lint:types` → `tsc -p tsconfig.app.json --noEmit`
+      - `npm run lint:format` → `prettier -c "src/**/*.{ts,html,css,scss,json,md}"`
+      - `.prettierignore` excludes `src/ui/**` prototypes from format checks
 
 ### release.yml
 - Triggers:

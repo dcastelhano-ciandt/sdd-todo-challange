@@ -17,6 +17,13 @@ This project uses GitHub Actions for CI and image publishing, Docker Hub for con
 
 Images default to `guillhermmzenni/sdd-todo-challange`. Change the `IMAGE_REPO` env in the release workflow if needed.
 
+### Lint/format policy
+- Frontend lint gate runs:
+  - `npm run lint:types` → `tsc -p tsconfig.app.json --noEmit`
+  - `npm run lint:format` → `prettier -c "src/**/*.{ts,html,css,scss,json,md}"`
+- Prototype assets under `src/ui/**` are excluded via `.prettierignore`.
+- To auto-fix formatting locally: `npm run format`.
+
 ## Docker Image
 - Context: `backend/`
 - Dockerfile: `backend/Dockerfile`
