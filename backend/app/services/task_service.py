@@ -44,12 +44,16 @@ class TaskService:
         self,
         user_id: str,
         status: Optional[str] = None,
+        q: Optional[str] = None,
     ) -> List[Task]:
         """Return tasks owned by user_id, ordered by created_at DESC.
 
         status: "pending" → completed=False filter
                 "completed" → completed=True filter
                 None → no filter
+
+        q: optional search keyword for case-insensitive title filter.
+           Whitespace-only or empty values are treated as no filter (None).
         """
         completed_filter: Optional[bool] = None
         if status == "pending":
@@ -57,7 +61,14 @@ class TaskService:
         elif status == "completed":
             completed_filter = True
 
-        return self.task_repo.list_by_user(user_id=user_id, status=completed_filter)
+        # Normalize keyword: strip whitespace; treat empty/whitespace-only as None
+        cleaned_q: Optional[str] = q.strip() if q else None
+        if cleaned_q == "":
+            cleaned_q = None
+
+        return self.task_repo.list_by_user(
+            user_id=user_id, status=completed_filter, q=cleaned_q
+        )
 
     # -----------------------------------------------------------------------
     # update_task

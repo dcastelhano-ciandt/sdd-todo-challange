@@ -15,6 +15,7 @@ list_by_user:
 """
 from typing import List, Optional
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.task import Task
@@ -36,10 +37,17 @@ class TaskRepository:
         self.db.refresh(task)
         return task
 
-    def list_by_user(self, user_id: str, status: Optional[bool]) -> List[Task]:
-        """Return tasks for user_id, optionally filtered by completed status.
+    def list_by_user(
+        self,
+        user_id: str,
+        status: Optional[bool],
+        q: Optional[str] = None,
+    ) -> List[Task]:
+        """Return tasks for user_id, optionally filtered by completed status and/or keyword.
 
         Results are ordered by created_at DESC (newest first).
+
+        q: when provided (non-None), applies a case-insensitive LIKE filter on the title column.
         """
         query = (
             self.db.query(Task)
@@ -47,6 +55,8 @@ class TaskRepository:
         )
         if status is not None:
             query = query.filter(Task.completed == status)
+        if q is not None:
+            query = query.filter(func.lower(Task.title).like(f"%{q.lower()}%"))
         query = query.order_by(Task.created_at.desc())
         return query.all()
 

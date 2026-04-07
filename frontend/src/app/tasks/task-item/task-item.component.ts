@@ -8,59 +8,72 @@ import { TaskStateService } from '../services/task-state.service';
   selector: 'app-task-item',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  styles: [`
-    .task-title.completed {
-      text-decoration: line-through;
-      color: #888;
-    }
-  `],
   template: `
-    <div class="task-item" data-testid="task-item">
+    <div class="group relative flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors duration-200" data-testid="task-item">
       <ng-container *ngIf="!editing">
-        <span
-          data-testid="task-title"
-          class="task-title"
-          [class.completed]="task.completed"
-        >{{ task.title }}</span>
-
+        <!-- Circle toggle -->
         <button
           data-testid="toggle-completion"
+          type="button"
           (click)="onToggle()"
-          type="button"
+          class="mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+          [ngClass]="task.completed
+            ? 'bg-primary border-primary'
+            : 'border-primary/60 group-hover:border-primary group-hover:bg-primary/5'"
         >
-          {{ task.completed ? 'Reopen' : 'Complete' }}
+          <span
+            class="material-symbols-outlined text-[15px] transition-opacity"
+            [ngClass]="task.completed ? 'text-on-primary opacity-100' : 'text-primary opacity-0 group-hover:opacity-60'"
+            [ngStyle]="checkIconStyle"
+          >check</span>
         </button>
 
-        <button
-          data-testid="edit-button"
-          (click)="startEditing()"
-          type="button"
-        >
-          Edit
-        </button>
+        <!-- Title + metadata -->
+        <div class="flex-1 min-w-0">
+          <h3
+            data-testid="task-title"
+            class="text-on-surface font-semibold text-[15px] leading-snug"
+            [ngClass]="task.completed ? 'line-through decoration-primary/60 decoration-2' : ''"
+          >{{ task.title }}</h3>
+        </div>
 
-        <button
-          data-testid="delete-button"
-          (click)="onDelete()"
-          type="button"
-        >
-          Delete
-        </button>
+        <!-- Hover actions -->
+        <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity flex-shrink-0">
+          <button
+            data-testid="edit-button"
+            type="button"
+            (click)="startEditing()"
+            class="p-1.5 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container-high"
+          >
+            <span class="material-symbols-outlined text-[18px]">edit</span>
+          </button>
+          <button
+            data-testid="delete-button"
+            type="button"
+            (click)="onDelete()"
+            class="p-1.5 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error-container/30"
+          >
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+          </button>
+        </div>
       </ng-container>
 
       <ng-container *ngIf="editing">
         <form
           data-testid="edit-form"
           (submit)="onSubmitEdit($event)"
+          class="flex items-center gap-2 w-full flex-wrap"
         >
           <input
             data-testid="edit-input"
             type="text"
             [value]="editTitle"
             (input)="onEditInput($event)"
+            class="flex-1 px-4 py-2 bg-surface-container-low border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none text-on-surface min-w-0"
+            autofocus
           />
-          <button type="submit">Save</button>
-          <button type="button" (click)="cancelEditing()">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-semibold text-sm shadow-sm transition-transform active:scale-95">Save</button>
+          <button type="button" (click)="cancelEditing()" class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-xl font-semibold text-sm transition-colors hover:bg-surface-container-highest">Cancel</button>
         </form>
       </ng-container>
     </div>
@@ -73,6 +86,10 @@ export class TaskItemComponent {
 
   editing = false;
   editTitle = '';
+
+  get checkIconStyle(): Record<string, string> {
+    return this.task.completed ? { 'font-variation-settings': "'FILL' 1" } : {};
+  }
 
   onToggle(): void {
     this.taskState.toggleCompletion(this.task.id).subscribe();

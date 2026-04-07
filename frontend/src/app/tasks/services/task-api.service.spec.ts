@@ -82,6 +82,48 @@ describe('TaskApiService', () => {
 
       expect(result).toEqual([TASK_A, TASK_B]);
     });
+
+    // --- Search feature: q parameter ---
+
+    it('should append ?q=report when listTasks is called with q="report"', () => {
+      service.listTasks(undefined, 'report').subscribe();
+
+      const req = httpTesting.expectOne('/api/v1/tasks?q=report');
+      expect(req.request.method).toBe('GET');
+      req.flush({ tasks: [] });
+    });
+
+    it('should append both status and q when both are provided', () => {
+      service.listTasks('pending', 'report').subscribe();
+
+      const req = httpTesting.expectOne('/api/v1/tasks?status=pending&q=report');
+      expect(req.request.method).toBe('GET');
+      req.flush({ tasks: [] });
+    });
+
+    it('should not append q param when q is empty string', () => {
+      service.listTasks(undefined, '').subscribe();
+
+      const req = httpTesting.expectOne('/api/v1/tasks');
+      expect(req.request.method).toBe('GET');
+      req.flush({ tasks: [] });
+    });
+
+    it('should not append q param when q is undefined', () => {
+      service.listTasks(undefined, undefined).subscribe();
+
+      const req = httpTesting.expectOne('/api/v1/tasks');
+      expect(req.request.method).toBe('GET');
+      req.flush({ tasks: [] });
+    });
+
+    it('should append only q when status is undefined and q is provided', () => {
+      service.listTasks(undefined, 'groceries').subscribe();
+
+      const req = httpTesting.expectOne('/api/v1/tasks?q=groceries');
+      expect(req.request.method).toBe('GET');
+      req.flush({ tasks: [] });
+    });
   });
 
   describe('createTask', () => {

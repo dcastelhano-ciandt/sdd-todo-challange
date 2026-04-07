@@ -10,25 +10,27 @@
 
 **Why first:** Zero new models, one query param, one UI element. Delivers immediate value once a user has more than ~20 tasks and costs the least of all five features.
 
+**Status:** ✅ Spec ready — `.sdd/specs/search/`
+
 ### Backend
 
-- [ ] Add optional `q: str | None` query parameter to `GET /api/v1/tasks`
-- [ ] Update `TaskRepository.list_by_user()` to accept an optional `search` argument
-- [ ] Implement case-insensitive `LIKE %keyword%` filter on the `title` column (chain with existing `status` filter)
-- [ ] Update `TaskService.list_tasks()` to pass `search` down to the repository
-- [ ] Add unit tests for the repository search filter (empty query, partial match, case-insensitive, no results)
-- [ ] Update `TaskListResponse` schema if needed (no change expected)
+- [x] Add optional `q: str | None` query parameter to `GET /api/v1/tasks`
+- [x] Update `TaskRepository.list_by_user()` to accept an optional `search` argument
+- [x] Implement case-insensitive `LIKE %keyword%` filter on the `title` column (chain with existing `status` filter)
+- [x] Update `TaskService.list_tasks()` to pass `search` down to the repository
+- [x] Add unit tests for the repository search filter (empty query, partial match, case-insensitive, no results)
+- [x] Update `TaskListResponse` schema if needed (no change expected)
 
 ### Frontend
 
-- [ ] Add `search` signal (`string`, default `''`) to `TaskStateService`
-- [ ] Extend `TaskApiService.listTasks()` to accept and forward the `q` parameter
-- [ ] Update `loadTasks()` in `TaskStateService` to pass the current search term
-- [ ] Add a debounced search input above the filter buttons in `TaskListComponent` (300 ms debounce via `RxJS debounceTime`)
-- [ ] Wire input value changes to call `loadTasks()` so results update as the user types
-- [ ] Show "No results for '...'" empty state when search returns zero tasks
-- [ ] Clear search when filter tab changes (or keep them independent — decide before implementation)
-- [ ] Add `data-testid="search-input"` and cover with e2e test (type keyword → list filters)
+- [x] Add `search` signal (`string`, default `''`) to `TaskStateService`
+- [x] Extend `TaskApiService.listTasks()` to accept and forward the `q` parameter
+- [x] Update `loadTasks()` in `TaskStateService` to pass the current search term
+- [x] Add a debounced search input above the filter buttons in `TaskListComponent` (300 ms debounce via `RxJS debounceTime`)
+- [x] Wire input value changes to call `loadTasks()` so results update as the user types
+- [x] Show "No results for '...'" empty state when search returns zero tasks
+- [x] Clear search when filter tab changes (or keep them independent — decide before implementation)
+- [x] Add `data-testid="search-input"` and cover with e2e test (type keyword → list filters)
 
 ---
 

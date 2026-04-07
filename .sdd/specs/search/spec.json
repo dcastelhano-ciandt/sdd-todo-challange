@@ -1,0 +1,22 @@
+{
+  "feature_name": "search",
+  "created_at": "2026-04-06T17:56:11Z",
+  "updated_at": "2026-04-06T18:45:00Z",
+  "language": "en",
+  "phase": "implementation-complete",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": true
+}

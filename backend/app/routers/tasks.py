@@ -87,16 +87,22 @@ def create_task(
 @router.get("", response_model=TaskListResponse, status_code=status.HTTP_200_OK)
 def list_tasks(
     status_filter: Optional[str] = Query(default=None, alias="status"),
+    q: Optional[str] = Query(default=None, alias="q"),
     current_user: UserContext = Depends(get_current_user),
     task_service: TaskService = Depends(get_task_service),
 ) -> TaskListResponse:
-    """List tasks for the authenticated user, with optional status filter.
+    """List tasks for the authenticated user, with optional status and search filters.
 
     ?status=pending   — only incomplete tasks
     ?status=completed — only completed tasks
     (no param)        — all tasks
+
+    ?q=keyword        — only tasks whose title contains the keyword (case-insensitive)
+    (no param / empty) — all tasks without title filter
     """
-    tasks = task_service.list_tasks(user_id=current_user.user_id, status=status_filter)
+    tasks = task_service.list_tasks(
+        user_id=current_user.user_id, status=status_filter, q=q
+    )
     return TaskListResponse(tasks=[TaskResponse.model_validate(t) for t in tasks])
 
 

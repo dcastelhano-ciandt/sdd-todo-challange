@@ -7,7 +7,7 @@ import { TaskListComponent } from './task-list.component';
 import { TaskStateService } from '../services/task-state.service';
 import { signal } from '@angular/core';
 import type { Task } from '../../shared/models/task.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 
 const TASK_PENDING: Task = {
   id: 'aaaaaaaa-0000-0000-0000-000000000001',
@@ -27,7 +27,7 @@ function createMockTaskStateService(overrides: Partial<{
   tasks: Task[];
   loading: boolean;
   filter: 'all' | 'pending' | 'completed';
-  loadTasksFn: () => Observable<void>;
+  loadTasksFn: (q?: string) => Observable<void>;
 }> = {}) {
   const tasksSignal = signal<Task[]>(overrides.tasks ?? []);
   const loadingSignal = signal<boolean>(overrides.loading ?? false);
@@ -37,7 +37,7 @@ function createMockTaskStateService(overrides: Partial<{
     tasks: tasksSignal.asReadonly(),
     loading: loadingSignal.asReadonly(),
     filter: filterSignal,
-    loadTasks: overrides.loadTasksFn ?? (() => of(undefined as unknown as void)),
+    loadTasks: overrides.loadTasksFn ?? vi.fn(() => of(undefined as unknown as void)),
     _tasksSignal: tasksSignal,
     _loadingSignal: loadingSignal,
   };
@@ -253,6 +253,239 @@ describe('TaskListComponent', () => {
 
       expect(mockState.filter()).toBe('all');
     });
+  });
+});
+
+// ─── Search Feature Tasks 6.1–6.5: search input, debounce, empty state ──────
+
+describe('TaskListComponent — search input rendering', () => {
+  let mockState: ReturnType<typeof createMockTaskStateService>;
+  let searchFixture: ReturnType<typeof TestBed.createComponent<TaskListComponent>>;
+  let searchComponent: TaskListComponent;
+
+  beforeEach(() => {
+    mockState = createMockTaskStateService({ loading: false, tasks: [TASK_PENDING] });
+
+    TestBed.configureTestingModule({
+      imports: [TaskListComponent],
+      providers: [
+        provideRouter([
+          { path: 'dashboard', component: {} as any },
+          { path: 'login', component: {} as any },
+        ]),
+        { provide: TaskStateService, useValue: mockState },
+      ],
+    });
+
+    searchFixture = TestBed.createComponent(TaskListComponent);
+    searchComponent = searchFixture.componentInstance;
+    searchFixture.detectChanges();
+  });
+
+  it('should render the search input element (data-testid="search-input")', () => {
+    const el: HTMLElement = searchFixture.nativeElement;
+    expect(el.querySelector('[data-testid="search-input"]')).not.toBeNull();
+  });
+
+  it('should render the clear search icon (data-testid="clear-search")', () => {
+    const el: HTMLElement = searchFixture.nativeElement;
+    expect(el.querySelector('[data-testid="clear-search"]')).not.toBeNull();
+  });
+
+  it('should render a leading search icon (material-symbols-outlined "search")', () => {
+    const el: HTMLElement = searchFixture.nativeElement;
+    // The leading icon should be a span/element containing the text "search"
+    const icons = el.querySelectorAll('.material-symbols-outlined');
+    const hasSearchIcon = Array.from(icons).some(
+      (icon) => icon.textContent?.trim() === 'search'
+    );
+    expect(hasSearchIcon).toBe(true);
+  });
+
+  it('should render the search input above the filter controls', () => {
+    const el: HTMLElement = searchFixture.nativeElement;
+    const searchWrapper = el.querySelector('.search-bar');
+    const filterControls = el.querySelector('.filter-controls');
+    expect(searchWrapper).not.toBeNull();
+    expect(filterControls).not.toBeNull();
+    // Search wrapper should appear before filter controls in DOM order
+    const position = searchWrapper!.compareDocumentPosition(filterControls!);
+    // DOCUMENT_POSITION_FOLLOWING (4) means filterControls comes after searchWrapper
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('should have a search input with placeholder text', () => {
+    const el: HTMLElement = searchFixture.nativeElement;
+    const input = el.querySelector<HTMLInputElement>('[data-testid="search-input"]');
+    expect(input?.placeholder).toBeTruthy();
+  });
+});
+
+describe('TaskListComponent — clear search behavior', () => {
+  let mockState: ReturnType<typeof createMockTaskStateService>;
+  let searchFixture: ReturnType<typeof TestBed.createComponent<TaskListComponent>>;
+  let searchComponent: TaskListComponent;
+
+  beforeEach(() => {
+    mockState = createMockTaskStateService({ loading: false, tasks: [TASK_PENDING] });
+
+    TestBed.configureTestingModule({
+      imports: [TaskListComponent],
+      providers: [
+        provideRouter([
+          { path: 'dashboard', component: {} as any },
+          { path: 'login', component: {} as any },
+        ]),
+        { provide: TaskStateService, useValue: mockState },
+      ],
+    });
+
+    searchFixture = TestBed.createComponent(TaskListComponent);
+    searchComponent = searchFixture.componentInstance;
+    searchFixture.detectChanges();
+  });
+
+  it('should reset searchTerm to empty string when clear icon is clicked', () => {
+    searchComponent.searchTerm = 'groceries';
+    searchFixture.detectChanges();
+
+    const el: HTMLElement = searchFixture.nativeElement;
+    const clearBtn = el.querySelector<HTMLElement>('[data-testid="clear-search"]');
+    clearBtn!.click();
+    searchFixture.detectChanges();
+
+    expect(searchComponent.searchTerm).toBe('');
+  });
+
+  it('should call loadTasks() immediately (without debounce) when clear is clicked', () => {
+    searchComponent.searchTerm = 'groceries';
+    searchFixture.detectChanges();
+
+    const loadTasksSpy = mockState.loadTasks as ReturnType<typeof vi.fn>;
+    loadTasksSpy.mockClear();
+
+    const el: HTMLElement = searchFixture.nativeElement;
+    const clearBtn = el.querySelector<HTMLElement>('[data-testid="clear-search"]');
+    clearBtn!.click();
+    searchFixture.detectChanges();
+
+    expect(loadTasksSpy).toHaveBeenCalled();
+  });
+});
+
+describe('TaskListComponent — search empty state', () => {
+  let emptySearchFixture: ReturnType<typeof TestBed.createComponent<TaskListComponent>>;
+  let emptySearchComponent: TaskListComponent;
+  let mockStateEmpty: ReturnType<typeof createMockTaskStateService>;
+
+  beforeEach(() => {
+    mockStateEmpty = createMockTaskStateService({ loading: false, tasks: [] });
+
+    TestBed.configureTestingModule({
+      imports: [TaskListComponent],
+      providers: [
+        provideRouter([
+          { path: 'dashboard', component: {} as any },
+          { path: 'login', component: {} as any },
+        ]),
+        { provide: TaskStateService, useValue: mockStateEmpty },
+      ],
+    });
+
+    emptySearchFixture = TestBed.createComponent(TaskListComponent);
+    emptySearchComponent = emptySearchFixture.componentInstance;
+    emptySearchFixture.detectChanges();
+  });
+
+  it('should display "No results for..." when tasks are empty and searchTerm is active', () => {
+    emptySearchComponent.searchTerm = 'xyz';
+    emptySearchFixture.detectChanges();
+
+    const el: HTMLElement = emptySearchFixture.nativeElement;
+    const emptyState = el.querySelector('[data-testid="empty-state"]');
+    expect(emptyState).not.toBeNull();
+    expect(emptyState!.textContent).toContain("No results for 'xyz'");
+  });
+
+  it('should include the search term in single quotes in the empty state message', () => {
+    emptySearchComponent.searchTerm = 'groceries';
+    emptySearchFixture.detectChanges();
+
+    const el: HTMLElement = emptySearchFixture.nativeElement;
+    const emptyState = el.querySelector('[data-testid="empty-state"]');
+    expect(emptyState!.textContent).toContain("'groceries'");
+  });
+
+  it('should display the default empty state when no search term is active', () => {
+    emptySearchComponent.searchTerm = '';
+    emptySearchFixture.detectChanges();
+
+    const el: HTMLElement = emptySearchFixture.nativeElement;
+    const emptyState = el.querySelector('[data-testid="empty-state"]');
+    expect(emptyState).not.toBeNull();
+    expect(emptyState!.textContent).toContain('No tasks yet');
+  });
+
+  it('should suppress the empty state while loading is true', () => {
+    mockStateEmpty._loadingSignal.set(true);
+    emptySearchComponent.searchTerm = 'something';
+    emptySearchFixture.detectChanges();
+
+    const el: HTMLElement = emptySearchFixture.nativeElement;
+    expect(el.querySelector('[data-testid="empty-state"]')).toBeNull();
+  });
+});
+
+describe('TaskListComponent — filter button triggers reload with current search term', () => {
+  let filterSearchFixture: ReturnType<typeof TestBed.createComponent<TaskListComponent>>;
+  let filterSearchComponent: TaskListComponent;
+  let filterMockState: ReturnType<typeof createMockTaskStateService>;
+
+  beforeEach(() => {
+    filterMockState = createMockTaskStateService({ loading: false, tasks: [TASK_PENDING], filter: 'all' });
+
+    TestBed.configureTestingModule({
+      imports: [TaskListComponent],
+      providers: [
+        provideRouter([
+          { path: 'dashboard', component: {} as any },
+          { path: 'login', component: {} as any },
+        ]),
+        { provide: TaskStateService, useValue: filterMockState },
+      ],
+    });
+
+    filterSearchFixture = TestBed.createComponent(TaskListComponent);
+    filterSearchComponent = filterSearchFixture.componentInstance;
+    filterSearchFixture.detectChanges();
+  });
+
+  it('should call loadTasks with the current searchTerm when a filter button is clicked', () => {
+    filterSearchComponent.searchTerm = 'buy';
+    filterSearchFixture.detectChanges();
+
+    const loadTasksSpy = filterMockState.loadTasks as ReturnType<typeof vi.fn>;
+    loadTasksSpy.mockClear();
+
+    const el: HTMLElement = filterSearchFixture.nativeElement;
+    const pendingBtn = el.querySelector<HTMLButtonElement>('[data-testid="filter-pending"]');
+    pendingBtn!.click();
+    filterSearchFixture.detectChanges();
+
+    expect(filterMockState.filter()).toBe('pending');
+    expect(loadTasksSpy).toHaveBeenCalledWith('buy');
+  });
+
+  it('should not reset searchTerm when a filter button is clicked', () => {
+    filterSearchComponent.searchTerm = 'report';
+    filterSearchFixture.detectChanges();
+
+    const el: HTMLElement = filterSearchFixture.nativeElement;
+    const completedBtn = el.querySelector<HTMLButtonElement>('[data-testid="filter-completed"]');
+    completedBtn!.click();
+    filterSearchFixture.detectChanges();
+
+    expect(filterSearchComponent.searchTerm).toBe('report');
   });
 });
 
