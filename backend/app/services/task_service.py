@@ -58,6 +58,7 @@ class TaskService:
         self,
         user_id: str,
         status: Optional[str] = None,
+        q: Optional[str] = None,
         sort_by: Optional[str] = None,
         sort_dir: str = "asc",
     ) -> List[Task]:
@@ -87,9 +88,16 @@ class TaskService:
         elif status == "completed":
             completed_filter = True
 
+        # Normalize keyword: strip and treat empty/whitespace as None
+        keyword: Optional[str] = None
+        if q is not None:
+            stripped = q.strip()
+            keyword = stripped if stripped else None
+
         return self.task_repo.list_by_user(
             user_id=user_id,
             status=completed_filter,
+            q=keyword,
             sort_by=sort_by,
             sort_dir=sort_dir,
         )

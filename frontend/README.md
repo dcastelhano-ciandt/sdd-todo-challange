@@ -1,3 +1,30 @@
+# Frontend Environment Configuration
+
+This app reads its API base URL from a generated `public/env.js` file at runtime.
+
+## Quick start (local)
+1. Copy `.env.example` to `.env` and set:
+   - `API_BASE_URL=http://localhost:8000`
+2. Generate env and start:
+   - `npm install`
+   - `npm run start` (runs `npm run build:env` then `ng serve`)
+
+## Build
+- `npm run build` runs `npm run build:env` first, then `ng build`.
+
+## How it works
+- `scripts/generate-env.mjs` reads `.env` and writes `public/env.js`:
+  - `window.ENV = { API_BASE_URL: "<value>" }`
+- `src/index.html` includes `/env.js` before boot, making `window.ENV` available.
+- API services call relative endpoints when `API_BASE_URL` is empty.
+
+## Vercel
+1. In Vercel project settings, add an environment variable:
+   - `API_BASE_URL=https://<your-railway-service>.up.railway.app`
+2. Add a build command step (or Framework preset command override) to generate env.js before build:
+   - `npm ci && npm run build:env && npm run build`
+3. Deploy. The app will call the backend using `API_BASE_URL`.
+
 # Todo App — Frontend
 
 SPA built with **Angular 21**, using standalone components, reactive forms, signals, and an HTTP interceptor for JWT authentication.

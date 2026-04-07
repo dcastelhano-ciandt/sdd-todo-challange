@@ -92,6 +92,7 @@ def create_task(
 @router.get("", response_model=TaskListResponse, status_code=status.HTTP_200_OK)
 def list_tasks(
     status_filter: Optional[str] = Query(default=None, alias="status"),
+    q: Optional[str] = Query(default=None),
     sort_by: Optional[Literal["due_date"]] = Query(default=None),
     sort_dir: Literal["asc", "desc"] = Query(default="asc"),
     current_user: UserContext = Depends(get_current_user),
@@ -109,6 +110,7 @@ def list_tasks(
     tasks = task_service.list_tasks(
         user_id=current_user.user_id,
         status=status_filter,
+        q=q,
         sort_by=sort_by,
         sort_dir=sort_dir,
     )

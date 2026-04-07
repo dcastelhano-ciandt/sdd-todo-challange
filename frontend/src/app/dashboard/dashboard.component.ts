@@ -41,15 +41,29 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
           <div class="flex items-center gap-8">
             <span class="text-xl font-bold tracking-tighter text-primary">Task Flow</span>
             <div class="hidden md:flex items-center gap-6">
-              <a routerLink="/tasks" class="text-on-surface-variant hover:text-primary py-5 text-sm transition-colors">Tasks</a>
-              <a class="text-primary font-semibold border-b-2 border-primary py-5 text-sm" href="#">Account</a>
+              <a
+                routerLink="/tasks"
+                class="text-on-surface-variant hover:text-primary py-5 text-sm transition-colors"
+                >Tasks</a
+              >
+              <a class="text-primary font-semibold border-b-2 border-primary py-5 text-sm" href="#"
+                >Account</a
+              >
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <button type="button" class="p-2 hover:bg-surface-container-low rounded-full transition-colors">
-              <span class="material-symbols-outlined text-on-surface-variant text-[22px]">notifications</span>
+            <button
+              type="button"
+              class="p-2 hover:bg-surface-container-low rounded-full transition-colors"
+            >
+              <span class="material-symbols-outlined text-on-surface-variant text-[22px]"
+                >notifications</span
+              >
             </button>
-            <div class="w-8 h-8 bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs ring-2 ring-primary/20" style="border-radius: 9999px">
+            <div
+              class="w-8 h-8 bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs ring-2 ring-primary/20"
+              style="border-radius: 9999px"
+            >
               {{ initials }}
             </div>
           </div>
@@ -58,8 +72,12 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
 
       <main class="max-w-[800px] mx-auto px-6 py-12">
         <header class="mb-12">
-          <h1 class="text-3xl font-extrabold tracking-tighter text-on-surface mb-2">Account Settings</h1>
-          <p class="text-on-surface-variant text-sm">Manage your profile, security, and preferences.</p>
+          <h1 class="text-3xl font-extrabold tracking-tighter text-on-surface mb-2">
+            Account Settings
+          </h1>
+          <p class="text-on-surface-variant text-sm">
+            Manage your profile, security, and preferences.
+          </p>
         </header>
 
         <!-- Success feedback -->
@@ -75,13 +93,20 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
 
         <div class="space-y-12">
           <!-- Profile Identity -->
-          <section class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-outline-variant/10">
+          <section
+            class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-outline-variant/10"
+          >
             <div>
               <h2 class="text-base font-bold tracking-tight text-on-surface">Profile Identity</h2>
-              <p class="text-sm text-on-surface-variant mt-1">This information is visible within your workspace.</p>
+              <p class="text-sm text-on-surface-variant mt-1">
+                This information is visible within your workspace.
+              </p>
             </div>
             <div class="md:col-span-2 flex items-center gap-6">
-              <div class="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white text-2xl font-bold ring-2 ring-primary/20" style="border-radius: 9999px">
+              <div
+                class="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white text-2xl font-bold ring-2 ring-primary/20"
+                style="border-radius: 9999px"
+              >
                 {{ initials }}
               </div>
               <div>
@@ -91,21 +116,35 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
                   *ngIf="profileLoadError"
                   class="text-xs text-error mt-1"
                   data-testid="profile-load-error"
-                >{{ profileLoadError }}</div>
+                >
+                  {{ profileLoadError }}
+                </div>
               </div>
             </div>
           </section>
 
           <!-- Security -->
-          <section class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-outline-variant/10">
+          <section
+            class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-outline-variant/10"
+          >
             <div>
               <h2 class="text-base font-bold tracking-tight text-on-surface">Security</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Ensure your account is using a long, random password.</p>
+              <p class="text-sm text-on-surface-variant mt-1">
+                Ensure your account is using a long, random password.
+              </p>
             </div>
             <div class="md:col-span-2 space-y-6">
-              <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()" class="space-y-4">
+              <form
+                [formGroup]="changePasswordForm"
+                (ngSubmit)="onChangePassword()"
+                class="space-y-4"
+              >
                 <div>
-                  <label class="block text-sm font-medium text-on-surface mb-2" for="currentPassword">Current Password</label>
+                  <label
+                    class="block text-sm font-medium text-on-surface mb-2"
+                    for="currentPassword"
+                    >Current Password</label
+                  >
                   <input
                     id="currentPassword"
                     type="password"
@@ -114,21 +153,33 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
                     autocomplete="current-password"
                     class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none"
                   />
-                  <span class="block text-xs text-error mt-1"
+                  <span
+                    class="block text-xs text-error mt-1"
                     data-testid="current-password-required-error"
-                    *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.hasError('required')">
+                    *ngIf="
+                      changePasswordForm.get('currentPassword')?.touched &&
+                      changePasswordForm.get('currentPassword')?.hasError('required')
+                    "
+                  >
                     Current password is required.
                   </span>
-                  <span class="block text-xs text-error mt-1"
+                  <span
+                    class="block text-xs text-error mt-1"
                     data-testid="current-password-incorrect-error"
-                    *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.hasError('incorrectPassword')">
+                    *ngIf="
+                      changePasswordForm.get('currentPassword')?.touched &&
+                      changePasswordForm.get('currentPassword')?.hasError('incorrectPassword')
+                    "
+                  >
                     The current password you entered is incorrect.
                   </span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-sm font-medium text-on-surface mb-2" for="newPassword">New Password</label>
+                    <label class="block text-sm font-medium text-on-surface mb-2" for="newPassword"
+                      >New Password</label
+                    >
                     <input
                       id="newPassword"
                       type="password"
@@ -138,19 +189,33 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
                       placeholder="Min. 8 characters"
                       class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none placeholder:text-outline/50"
                     />
-                    <span class="block text-xs text-error mt-1"
+                    <span
+                      class="block text-xs text-error mt-1"
                       data-testid="new-password-required-error"
-                      *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('required')">
+                      *ngIf="
+                        changePasswordForm.get('newPassword')?.touched &&
+                        changePasswordForm.get('newPassword')?.hasError('required')
+                      "
+                    >
                       New password is required.
                     </span>
-                    <span class="block text-xs text-error mt-1"
+                    <span
+                      class="block text-xs text-error mt-1"
                       data-testid="new-password-minlength-error"
-                      *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('minlength')">
+                      *ngIf="
+                        changePasswordForm.get('newPassword')?.touched &&
+                        changePasswordForm.get('newPassword')?.hasError('minlength')
+                      "
+                    >
                       Password must be at least 8 characters.
                     </span>
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-on-surface mb-2" for="confirmNewPassword">Confirm New Password</label>
+                    <label
+                      class="block text-sm font-medium text-on-surface mb-2"
+                      for="confirmNewPassword"
+                      >Confirm New Password</label
+                    >
                     <input
                       id="confirmNewPassword"
                       type="password"
@@ -160,14 +225,24 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
                       placeholder="Repeat password"
                       class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none placeholder:text-outline/50"
                     />
-                    <span class="block text-xs text-error mt-1"
+                    <span
+                      class="block text-xs text-error mt-1"
                       data-testid="confirm-password-required-error"
-                      *ngIf="changePasswordForm.get('confirmNewPassword')?.touched && changePasswordForm.get('confirmNewPassword')?.hasError('required')">
+                      *ngIf="
+                        changePasswordForm.get('confirmNewPassword')?.touched &&
+                        changePasswordForm.get('confirmNewPassword')?.hasError('required')
+                      "
+                    >
                       Confirm new password is required.
                     </span>
-                    <span class="block text-xs text-error mt-1"
+                    <span
+                      class="block text-xs text-error mt-1"
                       data-testid="passwords-mismatch-error"
-                      *ngIf="changePasswordForm.get('confirmNewPassword')?.touched && changePasswordForm.hasError('passwordsMismatch')">
+                      *ngIf="
+                        changePasswordForm.get('confirmNewPassword')?.touched &&
+                        changePasswordForm.hasError('passwordsMismatch')
+                      "
+                    >
                       New password and confirmation do not match.
                     </span>
                   </div>
@@ -200,15 +275,24 @@ export function passwordsMatchValidator(control: AbstractControl): ValidationErr
           <section class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12">
             <div>
               <h2 class="text-base font-bold tracking-tight text-error">Danger Zone</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Irreversible actions that affect your data.</p>
+              <p class="text-sm text-on-surface-variant mt-1">
+                Irreversible actions that affect your data.
+              </p>
             </div>
             <div class="md:col-span-2">
-              <div class="bg-error-container/30 border border-error/10 p-6 rounded-xl flex items-center justify-between gap-4">
+              <div
+                class="bg-error-container/30 border border-error/10 p-6 rounded-xl flex items-center justify-between gap-4"
+              >
                 <div>
                   <h3 class="font-bold text-on-error-container text-sm">Delete Account</h3>
-                  <p class="text-sm text-on-error-container/80 mt-1">Permanently delete your tasks and workspace.</p>
+                  <p class="text-sm text-on-error-container/80 mt-1">
+                    Permanently delete your tasks and workspace.
+                  </p>
                 </div>
-                <button type="button" class="text-error font-semibold text-sm px-4 py-2 hover:bg-error/5 rounded-xl transition-colors flex-shrink-0">
+                <button
+                  type="button"
+                  class="text-error font-semibold text-sm px-4 py-2 hover:bg-error/5 rounded-xl transition-colors flex-shrink-0"
+                >
                   Delete Account
                 </button>
               </div>
