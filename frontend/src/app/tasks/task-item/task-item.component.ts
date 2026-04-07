@@ -1,5 +1,5 @@
 import { Component, Input, inject } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import type { Task } from '../../shared/models/task.model';
 import { TaskStateService, isOverdue } from '../services/task-state.service';
@@ -7,63 +7,80 @@ import { TaskStateService, isOverdue } from '../services/task-state.service';
 @Component({
   selector: 'app-task-item',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe],
-  styles: [
-    `
-      .task-title.completed {
-        text-decoration: line-through;
-        color: #888;
-      }
-      .due-date-label {
-        font-size: 0.85em;
-        color: #555;
-        margin-left: 0.5em;
-      }
-      .overdue-indicator {
-        color: #c0392b;
-        font-weight: bold;
-        text-decoration: underline;
-        margin-left: 0.5em;
-      }
-      .task--overdue .task-title {
-        color: #c0392b;
-      }
-    `,
-  ],
+  imports: [CommonModule, FormsModule],
   template: `
-    <div class="task-item" [class.task--overdue]="taskIsOverdue" data-testid="task-item">
+    <div class="group relative flex items-start gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors duration-200" data-testid="task-item">
       <ng-container *ngIf="!editing">
-        <span data-testid="task-title" class="task-title" [class.completed]="task.completed">{{
-          task.title
-        }}</span>
-
-        <span
-          *ngIf="task.due_date"
-          class="due-date-label"
-          [attr.aria-label]="'Due: ' + (task.due_date | date: 'MMM d, y')"
-          >{{ task.due_date | date: 'MMM d, y' }}</span
+        <!-- Circle toggle -->
+        <button
+          data-testid="toggle-completion"
+          type="button"
+          (click)="onToggle()"
+          class="mt-1 w-6 h-6 border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+          style="border-radius: 9999px"
+          [ngClass]="task.completed
+            ? 'bg-primary border-primary'
+            : 'border-primary/60 group-hover:border-primary group-hover:bg-primary/5'"
         >
-
-        <span *ngIf="taskIsOverdue" class="overdue-indicator" aria-label="Overdue" role="img"
-          >&#9888; Overdue</span
-        >
-
-        <button data-testid="toggle-completion" (click)="onToggle()" type="button">
-          {{ task.completed ? 'Reopen' : 'Complete' }}
+          <span
+            class="material-symbols-outlined text-[15px] transition-opacity"
+            [ngClass]="task.completed ? 'text-on-primary opacity-100' : 'text-primary opacity-0 group-hover:opacity-60'"
+            [ngStyle]="checkIconStyle"
+          >check</span>
         </button>
 
-        <button data-testid="edit-button" (click)="startEditing()" type="button">Edit</button>
+        <!-- Title + metadata -->
+        <div class="flex-1 min-w-0">
+          <h3
+            data-testid="task-title"
+            class="text-on-surface font-semibold text-[15px] leading-snug"
+            [ngClass]="task.completed ? 'line-through decoration-primary/60 decoration-2' : (taskIsOverdue ? 'text-error' : '')"
+          >{{ task.title }}</h3>
+          <div *ngIf="task.due_date" class="flex items-center gap-1.5 mt-1">
+            <span class="material-symbols-outlined text-[13px]"
+              [ngClass]="taskIsOverdue ? 'text-error' : 'text-on-surface-variant/60'"
+            >calendar_today</span>
+            <span class="text-[11px] font-medium"
+              [ngClass]="taskIsOverdue ? 'text-error font-bold' : 'text-on-surface-variant/60'"
+              [attr.aria-label]="'Due: ' + task.due_date"
+            >{{ task.due_date }}{{ taskIsOverdue ? ' · Overdue' : '' }}</span>
+          </div>
+        </div>
 
-        <button data-testid="delete-button" (click)="onDelete()" type="button">Delete</button>
+        <!-- Hover actions -->
+        <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity flex-shrink-0">
+          <button
+            data-testid="edit-button"
+            type="button"
+            (click)="startEditing()"
+            class="p-1.5 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container-high"
+          >
+            <span class="material-symbols-outlined text-[18px]">edit</span>
+          </button>
+          <button
+            data-testid="delete-button"
+            type="button"
+            (click)="onDelete()"
+            class="p-1.5 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error-container/30"
+          >
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+          </button>
+        </div>
       </ng-container>
 
       <ng-container *ngIf="editing">
-        <form data-testid="edit-form" (submit)="onSubmitEdit($event)">
+        <form
+          data-testid="edit-form"
+          (submit)="onSubmitEdit($event)"
+          class="flex items-center gap-2 w-full flex-wrap"
+        >
           <input
             data-testid="edit-input"
             type="text"
             [value]="editTitle"
             (input)="onEditInput($event)"
+            class="flex-1 px-4 py-2 bg-surface-container-low border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none text-on-surface min-w-0"
+            autofocus
           />
           <input
             type="date"
@@ -71,9 +88,10 @@ import { TaskStateService, isOverdue } from '../services/task-state.service';
             name="editDueDate"
             aria-label="Due date"
             (input)="onEditDueDateInput($event)"
+            class="px-3 py-2 bg-surface-container-low border-0 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-on-surface text-sm"
           />
-          <button type="submit">Save</button>
-          <button type="button" (click)="cancelEditing()">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-semibold text-sm shadow-sm transition-transform active:scale-95">Save</button>
+          <button type="button" (click)="cancelEditing()" class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-xl font-semibold text-sm transition-colors hover:bg-surface-container-highest">Cancel</button>
         </form>
       </ng-container>
     </div>
@@ -90,6 +108,10 @@ export class TaskItemComponent {
 
   get taskIsOverdue(): boolean {
     return isOverdue(this.task);
+  }
+
+  get checkIconStyle(): Record<string, string> {
+    return this.task.completed ? { 'font-variation-settings': "'FILL' 1" } : {};
   }
 
   onToggle(): void {

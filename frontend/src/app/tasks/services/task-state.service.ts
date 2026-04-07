@@ -1,12 +1,11 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { TaskApiService } from './task-api.service';
-import type { Task, TaskSortBy, TaskSortDir } from '../../shared/models/task.model';
+import type { Task, TaskStatus, TaskSortBy, TaskSortDir } from '../../shared/models/task.model';
 
 /** Returns today's date as "YYYY-MM-DD" in local time. */
 function todayISO(): string {
   const d = new Date();
-  // Use local date parts to avoid UTC offset issues
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
@@ -22,10 +21,9 @@ export function isOverdue(task: Task): boolean {
 export class TaskStateService {
   private readonly taskApi = inject(TaskApiService);
 
-  private readonly _tasks = signal<Task[]>([]);
+  private readonly _allTasks = signal<Task[]>([]);
   private readonly _loading = signal<boolean>(false);
 
-  private readonly _allTasks = this._tasks.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly filter = signal<'all' | 'pending' | 'completed' | 'overdue'>('all');
   readonly sortBy = signal<TaskSortBy>(null);
@@ -33,32 +31,34 @@ export class TaskStateService {
 
   readonly overdueCount = computed(() => this._allTasks().filter(isOverdue).length);
 
+  // Client-side filtering so the UI can switch filters without a new network call.
+  // 'overdue' is always client-side; 'pending'/'completed' are also pre-filtered here
+  // (the API already filtered them, so this is a no-op in practice).
   readonly tasks = computed(() => {
     const f = this.filter();
     const all = this._allTasks();
-    if (f === 'all') return all;
     if (f === 'completed') return all.filter((t) => t.completed);
     if (f === 'pending') return all.filter((t) => !t.completed);
     if (f === 'overdue') return all.filter(isOverdue);
     return all;
   });
 
-  loadTasks(): Observable<void> {
+  loadTasks(q?: string): Observable<void> {
     this._loading.set(true);
 
     const currentSortBy = this.sortBy();
     const currentSortDir = this.sortDir();
 
-    // For 'pending' and 'completed' filters, pass status to the API for server-side filtering.
-    // For 'all' and 'overdue' we load all tasks (overdue derivation is client-side).
+    // Pass status to the API for server-side filtering where applicable.
+    // 'overdue' derivation is client-side, so we fetch all tasks for it.
     const filterValue = this.filter();
-    let statusParam: import('../../shared/models/task.model').TaskStatus | undefined;
+    let statusParam: TaskStatus | undefined;
     if (filterValue === 'pending') statusParam = 'pending';
     else if (filterValue === 'completed') statusParam = 'completed';
 
-    return this.taskApi.listTasks(statusParam, currentSortBy, currentSortDir).pipe(
+    return this.taskApi.listTasks(statusParam, q, currentSortBy, currentSortDir).pipe(
       tap((tasks) => {
-        this._tasks.set(tasks);
+        this._allTasks.set(tasks);
         this._loading.set(false);
       }),
       catchError((err) => {
@@ -71,7 +71,7 @@ export class TaskStateService {
   createTask(title: string, dueDate?: string | null): Observable<Task> {
     return this.taskApi.createTask(title, dueDate).pipe(
       tap((task) => {
-        this._tasks.update((current) => [...current, task]);
+        this._allTasks.update((current) => [...current, task]);
       }),
     );
   }
@@ -79,41 +79,39 @@ export class TaskStateService {
   updateTask(taskId: string, title: string, dueDate?: string | null): Observable<Task> {
     return this.taskApi.updateTask(taskId, title, dueDate).pipe(
       tap((updated) => {
-        this._tasks.update((current) => current.map((t) => (t.id === taskId ? updated : t)));
+        this._allTasks.update((current) => current.map((t) => (t.id === taskId ? updated : t)));
       }),
     );
   }
 
   toggleCompletion(taskId: string): Observable<Task> {
-    const snapshot = this._tasks();
+    const snapshot = this._allTasks();
 
     // Optimistic update
-    this._tasks.update((current) =>
+    this._allTasks.update((current) =>
       current.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t)),
     );
 
     return this.taskApi.toggleCompletion(taskId).pipe(
       tap((updated) => {
-        this._tasks.update((current) => current.map((t) => (t.id === taskId ? updated : t)));
+        this._allTasks.update((current) => current.map((t) => (t.id === taskId ? updated : t)));
       }),
       catchError((err) => {
-        // Rollback to the original snapshot
-        this._tasks.set(snapshot);
+        this._allTasks.set(snapshot);
         return throwError(() => err);
       }),
     );
   }
 
   deleteTask(taskId: string): Observable<void> {
-    const snapshot = this._tasks();
+    const snapshot = this._allTasks();
 
     // Optimistic removal
-    this._tasks.update((current) => current.filter((t) => t.id !== taskId));
+    this._allTasks.update((current) => current.filter((t) => t.id !== taskId));
 
     return this.taskApi.deleteTask(taskId).pipe(
       catchError((err) => {
-        // Rollback to the original snapshot
-        this._tasks.set(snapshot);
+        this._allTasks.set(snapshot);
         return throwError(() => err);
       }),
     );

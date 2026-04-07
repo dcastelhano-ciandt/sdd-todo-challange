@@ -95,6 +95,46 @@ describe('TaskStateService', () => {
 
       httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [] });
     });
+
+    // --- Search feature: q parameter forwarding ---
+
+    it('should pass the q parameter to the API when loadTasks is called with a keyword', () => {
+      service.filter.set('all');
+      service.loadTasks('meeting').subscribe();
+
+      httpTesting.expectOne('/api/v1/tasks?q=meeting').flush({ tasks: [] });
+    });
+
+    it('should pass both status and q when filter is not "all" and q is provided', () => {
+      service.filter.set('pending');
+      service.loadTasks('report').subscribe();
+
+      httpTesting.expectOne('/api/v1/tasks?status=pending&q=report').flush({ tasks: [TASK_PENDING] });
+    });
+
+    it('should not append q param when loadTasks is called without a keyword', () => {
+      service.filter.set('all');
+      service.loadTasks().subscribe();
+
+      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [] });
+    });
+
+    it('should read the filter signal at call time so filter changes are picked up', () => {
+      service.filter.set('completed');
+      service.loadTasks('test').subscribe();
+
+      httpTesting.expectOne('/api/v1/tasks?status=completed&q=test').flush({ tasks: [TASK_DONE] });
+    });
+
+    it('should not reset the filter signal when q is provided', () => {
+      service.filter.set('pending');
+      service.loadTasks('keyword').subscribe();
+
+      httpTesting.expectOne('/api/v1/tasks?status=pending&q=keyword').flush({ tasks: [] });
+
+      // filter signal must remain unchanged
+      expect(service.filter()).toBe('pending');
+    });
   });
 
   describe('createTask', () => {

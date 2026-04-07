@@ -1,7 +1,7 @@
 # Design System Strategy: The Focused Canvas
 
 ## 1. Overview & Creative North Star
-This design system is built upon the Creative North Star of **"The Kinetic Archive."** 
+This design system is built upon the Creative North Star of **"The Task Flow."** 
 
 We are moving away from the "grid of boxes" common in productivity tools. Instead, we treat the task management experience as a living, breathing editorial space. This system prioritizes **intentional asymmetry** and **tonal depth** over rigid structural lines. By leveraging the sophistication of Notion’s clarity and Linear’s high-performance utility, we create a UI that feels less like a database and more like a premium workspace. 
 

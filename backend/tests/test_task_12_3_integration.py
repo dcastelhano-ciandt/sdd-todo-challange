@@ -604,3 +604,110 @@ def test_alembic_migration_token_blacklist_table_has_correct_columns():
             os.remove(tmp_path)
         except OSError:
             pass
+
+
+# ---------------------------------------------------------------------------
+# Task 7.1: Search endpoint integration tests
+# Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
+# ---------------------------------------------------------------------------
+
+def test_search_q_returns_matching_tasks_case_insensitive(client):
+    """GET /api/v1/tasks?q=<keyword> returns only tasks whose title contains the keyword,
+    and the match is case-insensitive (uppercase query finds lowercase title)."""
+    token = _register(client, "search71a@example.com")
+    client.post(_TASKS_URL, json={"title": "buy groceries"}, headers=_auth_headers(token))
+    client.post(_TASKS_URL, json={"title": "write report"}, headers=_auth_headers(token))
+
+    # lowercase query
+    resp_lower = client.get(f"{_TASKS_URL}?q=buy", headers=_auth_headers(token))
+    assert resp_lower.status_code == 200
+    titles_lower = [t["title"] for t in resp_lower.json()["tasks"]]
+    assert "buy groceries" in titles_lower
+    assert "write report" not in titles_lower
+
+    # UPPERCASE query — must return the same result (case-insensitive)
+    resp_upper = client.get(f"{_TASKS_URL}?q=BUY", headers=_auth_headers(token))
+    assert resp_upper.status_code == 200
+    titles_upper = [t["title"] for t in resp_upper.json()["tasks"]]
+    assert titles_upper == titles_lower
+
+
+def test_search_q_with_status_applies_both_filters(client):
+    """GET /api/v1/tasks?q=<keyword>&status=pending returns only pending tasks
+    that also match the keyword."""
+    token = _register(client, "search71b@example.com")
+
+    r_pending = client.post(
+        _TASKS_URL, json={"title": "buy bread (pending)"}, headers=_auth_headers(token)
+    )
+    r_done = client.post(
+        _TASKS_URL, json={"title": "buy milk (done)"}, headers=_auth_headers(token)
+    )
+    # Toggle r_done → completed
+    client.patch(
+        f"{_TASKS_URL}/{r_done.json()['id']}/toggle", headers=_auth_headers(token)
+    )
+    client.post(
+        _TASKS_URL, json={"title": "unrelated pending task"}, headers=_auth_headers(token)
+    )
+
+    resp = client.get(
+        f"{_TASKS_URL}?q=buy&status=pending", headers=_auth_headers(token)
+    )
+    assert resp.status_code == 200
+    tasks = resp.json()["tasks"]
+    titles = [t["title"] for t in tasks]
+    assert "buy bread (pending)" in titles
+    assert "buy milk (done)" not in titles
+    assert "unrelated pending task" not in titles
+
+
+def test_search_q_no_match_returns_200_empty_list(client):
+    """GET /api/v1/tasks?q=nomatch returns HTTP 200 with an empty tasks list
+    when no tasks match the keyword."""
+    token = _register(client, "search71c@example.com")
+    client.post(_TASKS_URL, json={"title": "Buy apples"}, headers=_auth_headers(token))
+
+    resp = client.get(
+        f"{_TASKS_URL}?q=xyzzy_no_match_at_all_123", headers=_auth_headers(token)
+    )
+    assert resp.status_code == 200
+    assert resp.json()["tasks"] == []
+
+
+def test_search_q_empty_string_returns_all_tasks(client):
+    """GET /api/v1/tasks?q= (empty string) returns all tasks for the user,
+    identical to calling without any q parameter."""
+    token = _register(client, "search71d@example.com")
+    client.post(_TASKS_URL, json={"title": "Task Alpha"}, headers=_auth_headers(token))
+    client.post(_TASKS_URL, json={"title": "Task Beta"}, headers=_auth_headers(token))
+
+    resp_no_q = client.get(_TASKS_URL, headers=_auth_headers(token))
+    resp_empty_q = client.get(f"{_TASKS_URL}?q=", headers=_auth_headers(token))
+
+    assert resp_no_q.status_code == 200
+    assert resp_empty_q.status_code == 200
+
+    titles_no_q = sorted(t["title"] for t in resp_no_q.json()["tasks"])
+    titles_empty_q = sorted(t["title"] for t in resp_empty_q.json()["tasks"])
+    assert titles_no_q == titles_empty_q
+
+
+def test_search_q_results_scoped_to_authenticated_user(client):
+    """GET /api/v1/tasks?q=<keyword> never returns matching tasks owned by another user."""
+    token_a = _register(client, "search71e_a@example.com")
+    token_b = _register(client, "search71e_b@example.com")
+
+    client.post(
+        _TASKS_URL, json={"title": "shared keyword userA"}, headers=_auth_headers(token_a)
+    )
+    client.post(
+        _TASKS_URL, json={"title": "shared keyword userB"}, headers=_auth_headers(token_b)
+    )
+
+    resp = client.get(f"{_TASKS_URL}?q=shared+keyword", headers=_auth_headers(token_a))
+    assert resp.status_code == 200
+    tasks = resp.json()["tasks"]
+    titles = [t["title"] for t in tasks]
+    assert "shared keyword userA" in titles
+    assert "shared keyword userB" not in titles

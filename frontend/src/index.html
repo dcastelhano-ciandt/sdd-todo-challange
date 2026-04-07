@@ -1,13 +1,84 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>TaskFlow</title>
-    <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  </head>
-  <body>
-    <app-root></app-root>
-  </body>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8">
+  <title>Task Flow</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-error-container": "#93000a",
+            "on-secondary-container": "#494b83",
+            "surface-container-high": "#e2e7ff",
+            "on-surface-variant": "#464554",
+            "outline": "#767586",
+            "tertiary": "#904900",
+            "surface-dim": "#d2d9f4",
+            "on-primary-fixed": "#07006c",
+            "surface-container-highest": "#dae2fd",
+            "on-background": "#131b2e",
+            "on-surface": "#131b2e",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#b55d00",
+            "surface-container-low": "#f2f3ff",
+            "on-secondary-fixed": "#13144a",
+            "error": "#ba1a1a",
+            "secondary": "#575992",
+            "error-container": "#ffdad6",
+            "primary-fixed": "#e1e0ff",
+            "inverse-on-surface": "#eef0ff",
+            "inverse-primary": "#c0c1ff",
+            "primary-container": "#6063ee",
+            "surface-tint": "#494bd6",
+            "surface-variant": "#dae2fd",
+            "on-primary": "#ffffff",
+            "surface-container": "#eaedff",
+            "tertiary-fixed-dim": "#ffb783",
+            "surface-bright": "#faf8ff",
+            "outline-variant": "#c7c4d7",
+            "inverse-surface": "#283044",
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#fffbff",
+            "primary": "#4648d4",
+            "background": "#faf8ff",
+            "surface": "#faf8ff",
+            "on-error": "#ffffff",
+            "secondary-container": "#bdbefe",
+            "tertiary-fixed": "#ffdcc5",
+            "on-tertiary-fixed-variant": "#703700"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          fontFamily: {
+            "headline": ["Inter"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+  <app-root></app-root>
+</body>
 </html>

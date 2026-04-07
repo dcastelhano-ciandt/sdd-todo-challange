@@ -11,10 +11,13 @@ interface TaskListResponse {
 export class TaskApiService {
   private readonly http = inject(HttpClient);
 
-  listTasks(status?: TaskStatus, sortBy?: TaskSortBy, sortDir?: TaskSortDir): Observable<Task[]> {
+  listTasks(status?: TaskStatus, q?: string, sortBy?: TaskSortBy, sortDir?: TaskSortDir): Observable<Task[]> {
     let params = new HttpParams();
     if (status) {
       params = params.set('status', status);
+    }
+    if (q) {
+      params = params.set('q', q);
     }
     if (sortBy) {
       params = params.set('sort_by', sortBy);
