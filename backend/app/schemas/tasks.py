@@ -1,18 +1,20 @@
 """
 Pydantic request/response schemas for the tasks router.
 
-CreateTaskRequest   — title (min_length=1)
-UpdateTaskRequest   — title (min_length=1)
-TaskResponse        — id, userId, title, completed
+CreateTaskRequest   — title (min_length=1), optional due_date
+UpdateTaskRequest   — title (min_length=1), optional due_date
+TaskResponse        — id, userId, title, completed, due_date
 TaskListResponse    — tasks: list[TaskResponse]
 """
-from typing import List
+from datetime import date
+from typing import List, Optional
 
 from pydantic import BaseModel, field_validator
 
 
 class CreateTaskRequest(BaseModel):
     title: str
+    due_date: Optional[date] = None
 
     @field_validator("title")
     @classmethod
@@ -24,6 +26,7 @@ class CreateTaskRequest(BaseModel):
 
 class UpdateTaskRequest(BaseModel):
     title: str
+    due_date: Optional[date] = None
 
     @field_validator("title")
     @classmethod
@@ -38,6 +41,7 @@ class TaskResponse(BaseModel):
     userId: str
     title: str
     completed: bool
+    due_date: Optional[date] = None
 
     model_config = {"from_attributes": True}
 

@@ -48,35 +48,27 @@ describe('DashboardComponent — task 5.1 (skeleton, email display, profile load
 
   describe('component structure', () => {
     it('should create the component', () => {
-      vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-        of({ email: 'user@example.com' })
-      );
+      vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'user@example.com' }));
       const fixture = createComponent();
       expect(fixture.componentInstance).toBeTruthy();
     });
 
     it('should render a text input for the email field', () => {
-      vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-        of({ email: 'user@example.com' })
-      );
+      vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'user@example.com' }));
       const fixture = createComponent();
       const el: HTMLElement = fixture.nativeElement;
       const emailInput = el.querySelector<HTMLInputElement>(
-        'input[type="text"][data-testid="email-input"], input[type="email"][data-testid="email-input"]'
+        'input[type="text"][data-testid="email-input"], input[type="email"][data-testid="email-input"]',
       );
       expect(emailInput).not.toBeNull();
     });
 
     it('should render the email input with the disabled attribute (requirement 1.4)', () => {
-      vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-        of({ email: 'user@example.com' })
-      );
+      vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'user@example.com' }));
       const fixture = createComponent();
       fixture.detectChanges();
       const el: HTMLElement = fixture.nativeElement;
-      const emailInput = el.querySelector<HTMLInputElement>(
-        '[data-testid="email-input"]'
-      );
+      const emailInput = el.querySelector<HTMLInputElement>('[data-testid="email-input"]');
       expect(emailInput).not.toBeNull();
       expect(emailInput!.disabled).toBe(true);
     });
@@ -104,17 +96,13 @@ describe('DashboardComponent — task 5.1 (skeleton, email display, profile load
       fixture.detectChanges();
 
       const el: HTMLElement = fixture.nativeElement;
-      const emailInput = el.querySelector<HTMLInputElement>(
-        '[data-testid="email-input"]'
-      );
+      const emailInput = el.querySelector<HTMLInputElement>('[data-testid="email-input"]');
       expect(emailInput).not.toBeNull();
       expect(emailInput!.value).toBe('test@example.com');
     });
 
     it('should expose the loaded email on the component instance', async () => {
-      vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-        of({ email: 'loaded@example.com' })
-      );
+      vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'loaded@example.com' }));
 
       const fixture = createComponent();
       await fixture.whenStable();
@@ -150,9 +138,7 @@ describe('DashboardComponent — task 5.1 (skeleton, email display, profile load
       fixture.detectChanges();
 
       const el: HTMLElement = fixture.nativeElement;
-      const emailInput = el.querySelector<HTMLInputElement>(
-        '[data-testid="email-input"]'
-      );
+      const emailInput = el.querySelector<HTMLInputElement>('[data-testid="email-input"]');
       const errorEl = el.querySelector('[data-testid="profile-load-error"]');
 
       // Either the email has a value OR an error message is shown — never silently blank
@@ -173,9 +159,7 @@ describe('DashboardComponent — task 5.1 (skeleton, email display, profile load
     });
 
     it('should NOT show a profile error when getProfile succeeds', async () => {
-      vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-        of({ email: 'ok@example.com' })
-      );
+      vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'ok@example.com' }));
 
       const fixture = createComponent();
       await fixture.whenStable();
@@ -193,9 +177,7 @@ describe('DashboardComponent — task 5.1 (skeleton, email display, profile load
     it('should be a standalone component', () => {
       // Angular standalone components have standalone: true in their metadata.
       // TestBed.createComponent works for standalone components without declaring them.
-      vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-        of({ email: 'user@example.com' })
-      );
+      vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'user@example.com' }));
       const fixture = createComponent();
       // If it renders without error, standalone: true is configured correctly.
       expect(fixture.nativeElement).toBeTruthy();
@@ -233,9 +215,7 @@ describe('DashboardComponent — task 5.2 (change-password reactive form)', () =
   });
 
   function createComponent() {
-    vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-      of({ email: 'user@example.com' })
-    );
+    vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'user@example.com' }));
     const fixture = TestBed.createComponent(DashboardComponent);
     fixture.detectChanges();
     return fixture;
@@ -297,7 +277,7 @@ describe('DashboardComponent — task 5.2 (change-password reactive form)', () =
       const fixture = createComponent();
       const el: HTMLElement = fixture.nativeElement;
       const input = el.querySelector<HTMLInputElement>(
-        'input[type="password"][formControlName="currentPassword"], input[type="password"][data-testid="current-password-input"]'
+        'input[type="password"][formControlName="currentPassword"], input[type="password"][data-testid="current-password-input"]',
       );
       expect(input).not.toBeNull();
     });
@@ -306,7 +286,7 @@ describe('DashboardComponent — task 5.2 (change-password reactive form)', () =
       const fixture = createComponent();
       const el: HTMLElement = fixture.nativeElement;
       const input = el.querySelector<HTMLInputElement>(
-        'input[type="password"][formControlName="newPassword"], input[type="password"][data-testid="new-password-input"]'
+        'input[type="password"][formControlName="newPassword"], input[type="password"][data-testid="new-password-input"]',
       );
       expect(input).not.toBeNull();
     });
@@ -315,7 +295,7 @@ describe('DashboardComponent — task 5.2 (change-password reactive form)', () =
       const fixture = createComponent();
       const el: HTMLElement = fixture.nativeElement;
       const input = el.querySelector<HTMLInputElement>(
-        'input[type="password"][formControlName="confirmNewPassword"], input[type="password"][data-testid="confirm-password-input"]'
+        'input[type="password"][formControlName="confirmNewPassword"], input[type="password"][data-testid="confirm-password-input"]',
       );
       expect(input).not.toBeNull();
     });
@@ -613,7 +593,6 @@ describe('DashboardComponent — task 5.2 (change-password reactive form)', () =
   // ─── Inline error messages (requirement 3.1, 3.2, 3.3) ────────────────────
 
   describe('inline error messages', () => {
-
     it('should show required error for currentPassword when touched and empty', async () => {
       const fixture = createComponent();
       const component = fixture.componentInstance as any;
@@ -758,9 +737,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
   });
 
   function createComponent() {
-    vi.spyOn(authApiService, 'getProfile').mockReturnValue(
-      of({ email: 'user@example.com' })
-    );
+    vi.spyOn(authApiService, 'getProfile').mockReturnValue(of({ email: 'user@example.com' }));
     const fixture = TestBed.createComponent(DashboardComponent);
     fixture.detectChanges();
     return fixture;
@@ -788,7 +765,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
 
       // Mock changePassword to never resolve during this test
       vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        new Subject<string>().asObservable()
+        new Subject<string>().asObservable(),
       );
 
       component.onChangePassword();
@@ -821,7 +798,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       await fixture.whenStable();
 
       const btn = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
-        'button[type="submit"]'
+        'button[type="submit"]',
       );
       expect(btn).not.toBeNull();
       expect(btn!.disabled).toBe(true);
@@ -850,7 +827,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       await fixture.whenStable();
 
       const btn = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
-        'button[type="submit"]'
+        'button[type="submit"]',
       );
       expect(btn!.textContent!.trim().length).toBeGreaterThan(0);
       // The label while submitting should differ from the idle label
@@ -986,9 +963,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       const error401 = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error401)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error401));
 
       component.onChangePassword();
       fixture.detectChanges();
@@ -1006,9 +981,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       const error401 = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error401)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error401));
 
       component.onChangePassword();
       fixture.detectChanges();
@@ -1027,9 +1000,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       const error401 = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error401)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error401));
 
       component.onChangePassword();
       fixture.detectChanges();
@@ -1044,9 +1015,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       const error401 = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error401)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error401));
 
       component.onChangePassword();
       await fixture.whenStable();
@@ -1068,9 +1037,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       const form: FormGroup = component.changePasswordForm;
 
       const error500 = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error500)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error500));
 
       // Run inside the zone so auto change detection fires after the error callback
       fixture.ngZone!.run(() => {
@@ -1098,9 +1065,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fixture.detectChanges();
 
       const error422 = new HttpErrorResponse({ status: 422, statusText: 'Unprocessable Entity' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error422)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error422));
 
       component.onChangePassword();
       await fixture.whenStable();
@@ -1118,9 +1083,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
         statusText: 'Internal Server Error',
         error: { detail: 'DB connection string xyz leaked here' },
       });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error500)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error500));
 
       component.onChangePassword();
       await fixture.whenStable();
@@ -1135,9 +1098,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       const error500 = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error500)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error500));
 
       component.onChangePassword();
       await fixture.whenStable();
@@ -1151,9 +1112,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       const error500 = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
-      vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        throwError(() => error500)
-      );
+      vi.spyOn(authApiService, 'changePassword').mockReturnValue(throwError(() => error500));
 
       component.onChangePassword();
       await fixture.whenStable();
@@ -1226,7 +1185,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        new Subject<string>().asObservable()
+        new Subject<string>().asObservable(),
       );
 
       component.onChangePassword();
@@ -1244,7 +1203,7 @@ describe('DashboardComponent — task 5.3 (form submission, loading state, resul
       fillValidForm(fixture);
 
       vi.spyOn(authApiService, 'changePassword').mockReturnValue(
-        new Subject<string>().asObservable()
+        new Subject<string>().asObservable(),
       );
 
       component.onChangePassword();

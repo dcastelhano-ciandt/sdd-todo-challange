@@ -3,6 +3,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Task as TaskModel } from '../../shared/models/task.model';
 import { TaskListComponent } from './task-list.component';
 import { TaskStateService } from '../services/task-state.service';
 import { signal } from '@angular/core';
@@ -23,21 +25,35 @@ const TASK_DONE: Task = {
   completed: true,
 };
 
-function createMockTaskStateService(overrides: Partial<{
-  tasks: Task[];
-  loading: boolean;
-  filter: 'all' | 'pending' | 'completed';
-  loadTasksFn: (q?: string) => Observable<void>;
-}> = {}) {
+function createMockTaskStateService(
+  overrides: Partial<{
+    tasks: Task[];
+    loading: boolean;
+    filter: 'all' | 'pending' | 'completed' | 'overdue';
+    loadTasksFn: () => Observable<void>;
+    overdueCount: number;
+    sortBy: 'due_date' | null;
+    sortDir: 'asc' | 'desc';
+  }> = {},
+) {
   const tasksSignal = signal<Task[]>(overrides.tasks ?? []);
   const loadingSignal = signal<boolean>(overrides.loading ?? false);
-  const filterSignal = signal<'all' | 'pending' | 'completed'>(overrides.filter ?? 'all');
+  const filterSignal = signal<'all' | 'pending' | 'completed' | 'overdue'>(
+    overrides.filter ?? 'all',
+  );
+  const overdueCountSignal = signal<number>(overrides.overdueCount ?? 0);
+  const sortBySignal = signal<'due_date' | null>(overrides.sortBy ?? null);
+  const sortDirSignal = signal<'asc' | 'desc'>(overrides.sortDir ?? 'asc');
 
   return {
     tasks: tasksSignal.asReadonly(),
     loading: loadingSignal.asReadonly(),
     filter: filterSignal,
-    loadTasks: overrides.loadTasksFn ?? vi.fn(() => of(undefined as unknown as void)),
+    overdueCount: overdueCountSignal.asReadonly(),
+    sortBy: sortBySignal,
+    sortDir: sortDirSignal,
+    loadTasks: overrides.loadTasksFn ?? (() => of(undefined as unknown as void)),
+    createTask: vi.fn((title: string) => of({} as Task)),
     _tasksSignal: tasksSignal,
     _loadingSignal: loadingSignal,
   };
@@ -75,7 +91,9 @@ describe('TaskListComponent', () => {
     });
 
     it('should call TaskStateService.loadTasks on ngOnInit', () => {
-      const loadTasksSpy = vi.spyOn(taskState, 'loadTasks').mockReturnValue(of(undefined as unknown as void));
+      const loadTasksSpy = vi
+        .spyOn(taskState, 'loadTasks')
+        .mockReturnValue(of(undefined as unknown as void));
       fixture.detectChanges();
 
       expect(loadTasksSpy).toHaveBeenCalledOnce();
@@ -518,7 +536,7 @@ describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
   it('should render a navigation link to /dashboard in the header (requirement 1.1)', () => {
     const el: HTMLElement = navFixture.nativeElement;
     const dashboardLink = el.querySelector<HTMLAnchorElement>(
-      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]',
     );
     expect(dashboardLink).not.toBeNull();
   });
@@ -527,7 +545,7 @@ describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
     const el: HTMLElement = navFixture.nativeElement;
     const logoutBtn = el.querySelector('[data-testid="logout-button"]');
     const dashboardLink = el.querySelector(
-      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]',
     );
     expect(logoutBtn).not.toBeNull();
     expect(dashboardLink).not.toBeNull();
@@ -538,21 +556,207 @@ describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
     const header = el.querySelector('.task-list-header');
     expect(header).not.toBeNull();
     const dashboardLink = header!.querySelector(
-      '[data-testid="dashboard-link"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+      '[data-testid="dashboard-link"], a[routerLink="/dashboard"], a[routerLink="dashboard"]',
     );
     expect(dashboardLink).not.toBeNull();
   });
 
   it('should navigate to /dashboard when the dashboard link is clicked', async () => {
     const el: HTMLElement = navFixture.nativeElement;
-    const dashboardLink = el.querySelector<HTMLAnchorElement>(
-      '[data-testid="dashboard-link"]'
-    );
+    const dashboardLink = el.querySelector<HTMLAnchorElement>('[data-testid="dashboard-link"]');
     expect(dashboardLink).not.toBeNull();
     // The link must have a routerLink or href pointing at dashboard
     const href = dashboardLink!.getAttribute('href');
-    const routerLink = dashboardLink!.getAttribute('ng-reflect-router-link') ??
+    const routerLink =
+      dashboardLink!.getAttribute('ng-reflect-router-link') ??
       dashboardLink!.getAttribute('routerlink');
     expect(href === '/dashboard' || routerLink !== null || href?.includes('dashboard')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Due Dates + Overdue Filter — TaskListComponent extensions (tasks 10.1–10.4)
+// ---------------------------------------------------------------------------
+
+/** Returns a date string N days from today (negative = past). */
+function daysFromTodayList(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+const OVERDUE_TASK: Task = {
+  id: 'overdue-list-001',
+  userId: 'user-1',
+  title: 'Overdue task',
+  completed: false,
+  due_date: daysFromTodayList(-1),
+};
+
+function makeListFixture(overrides: Parameters<typeof createMockTaskStateService>[0] = {}) {
+  const mockState = createMockTaskStateService(overrides);
+
+  TestBed.configureTestingModule({
+    imports: [TaskListComponent],
+    providers: [
+      provideRouter([
+        { path: 'dashboard', component: {} as any },
+        { path: 'login', component: {} as any },
+      ]),
+      { provide: TaskStateService, useValue: mockState },
+    ],
+  });
+
+  const fixture = TestBed.createComponent(TaskListComponent);
+  fixture.componentInstance;
+  fixture.detectChanges();
+  return { fixture, mockState };
+}
+
+describe('TaskListComponent — overdue filter button (task 10.1)', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+
+  it('should render an "Overdue" filter button', () => {
+    const { fixture } = makeListFixture({ tasks: [] });
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector('[data-testid="filter-overdue"]');
+    expect(btn).not.toBeNull();
+  });
+
+  it('should set filter to "overdue" when Overdue button is clicked', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [] });
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector<HTMLButtonElement>('[data-testid="filter-overdue"]');
+    btn!.click();
+    fixture.detectChanges();
+    expect(mockState.filter()).toBe('overdue');
+  });
+
+  it('should apply active class when filter is "overdue"', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [] });
+    mockState.filter.set('overdue');
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector<HTMLButtonElement>('[data-testid="filter-overdue"]');
+    expect(btn?.classList.contains('active')).toBe(true);
+  });
+
+  it('should set aria-pressed="true" when filter is "overdue"', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [] });
+    mockState.filter.set('overdue');
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector<HTMLButtonElement>('[data-testid="filter-overdue"]');
+    expect(btn?.getAttribute('aria-pressed')).toBe('true');
+  });
+});
+
+describe('TaskListComponent — overdue count badge (task 10.2)', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+
+  it('should render the overdue badge when overdueCount > 0', () => {
+    const { fixture } = makeListFixture({ tasks: [OVERDUE_TASK], overdueCount: 1 });
+    const el: HTMLElement = fixture.nativeElement;
+    const badge = el.querySelector('.overdue-badge');
+    expect(badge).not.toBeNull();
+  });
+
+  it('should NOT render the badge when overdueCount is 0', () => {
+    const { fixture } = makeListFixture({ tasks: [], overdueCount: 0 });
+    const el: HTMLElement = fixture.nativeElement;
+    const badge = el.querySelector('.overdue-badge');
+    expect(badge).toBeNull();
+  });
+
+  it('should display the correct overdue count in the badge', () => {
+    const { fixture } = makeListFixture({ tasks: [OVERDUE_TASK], overdueCount: 3 });
+    const el: HTMLElement = fixture.nativeElement;
+    const badge = el.querySelector('.overdue-badge');
+    expect(badge?.textContent?.trim()).toBe('3');
+  });
+});
+
+describe('TaskListComponent — sort controls (task 10.3)', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+
+  it('should render a sort-by-due-date button', () => {
+    const { fixture } = makeListFixture({ tasks: [] });
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector('[data-testid="sort-due-date"]');
+    expect(btn).not.toBeNull();
+  });
+
+  it('should set sortBy to "due_date" when sort button is clicked', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [] });
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector<HTMLButtonElement>('[data-testid="sort-due-date"]');
+    btn!.click();
+    fixture.detectChanges();
+    expect(mockState.sortBy()).toBe('due_date');
+  });
+
+  it('should toggle sortDir between asc and desc on subsequent clicks', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [] });
+    const el: HTMLElement = fixture.nativeElement;
+    const btn = el.querySelector<HTMLButtonElement>('[data-testid="sort-due-date"]');
+
+    // First click: sortBy=due_date, sortDir=asc (default)
+    btn!.click();
+    fixture.detectChanges();
+    expect(mockState.sortDir()).toBe('asc');
+
+    // Second click: toggles to desc
+    btn!.click();
+    fixture.detectChanges();
+    expect(mockState.sortDir()).toBe('desc');
+  });
+
+  it('should render a clear-sort button', () => {
+    const { fixture } = makeListFixture({ tasks: [], sortBy: 'due_date' });
+    const el: HTMLElement = fixture.nativeElement;
+    // The component should show a clear sort button somewhere
+    const clearBtn = el.querySelector('[data-testid="clear-sort"]');
+    expect(clearBtn).not.toBeNull();
+  });
+
+  it('should set sortBy to null when clear-sort is clicked', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [], sortBy: 'due_date' });
+    mockState.sortBy.set('due_date');
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const clearBtn = el.querySelector<HTMLButtonElement>('[data-testid="clear-sort"]');
+    clearBtn!.click();
+    fixture.detectChanges();
+    expect(mockState.sortBy()).toBeNull();
+  });
+});
+
+describe('TaskListComponent — overdue empty state (task 10.4)', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+
+  it('should show overdue-specific empty state when filter is overdue and tasks are empty', () => {
+    const { fixture, mockState } = makeListFixture({ tasks: [], filter: 'overdue' });
+    const el: HTMLElement = fixture.nativeElement;
+    const emptyState = el.querySelector('[data-testid="overdue-empty-state"]');
+    expect(emptyState).not.toBeNull();
+    expect(emptyState?.textContent).toContain('No overdue tasks');
+  });
+
+  it('should NOT show the overdue empty state when tasks exist', () => {
+    const { fixture } = makeListFixture({
+      tasks: [OVERDUE_TASK],
+      filter: 'overdue',
+      overdueCount: 1,
+    });
+    const el: HTMLElement = fixture.nativeElement;
+    const emptyState = el.querySelector('[data-testid="overdue-empty-state"]');
+    expect(emptyState).toBeNull();
+  });
+
+  it('should NOT show overdue empty state when filter is "all" and tasks are empty', () => {
+    const { fixture } = makeListFixture({ tasks: [], filter: 'all' });
+    const el: HTMLElement = fixture.nativeElement;
+    const emptyState = el.querySelector('[data-testid="overdue-empty-state"]');
+    expect(emptyState).toBeNull();
   });
 });

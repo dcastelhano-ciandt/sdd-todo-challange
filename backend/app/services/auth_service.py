@@ -15,6 +15,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, Optional
 
 from jose import JWTError, jwt as jose_jwt
+import hashlib
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -25,9 +26,11 @@ from app.repositories.user_repository import UserRepository
 
 # ---------------------------------------------------------------------------
 # Password context
+# Use bcrypt for stored hashes ($2b$...). To support long passwords, pre-hash
+# with SHA256-hexdigest before bcrypt. Keep bcrypt_sha256 available to verify
+# any existing records if present.
 # ---------------------------------------------------------------------------
-
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+_pwd_context = CryptContext(schemes=["bcrypt", "bcrypt_sha256"], deprecated="auto")
 
 
 class AuthService:
@@ -40,12 +43,23 @@ class AuthService:
     # -----------------------------------------------------------------------
 
     def hash_password(self, password: str) -> str:
-        """Return a bcrypt hash of the plaintext password."""
-        return _pwd_context.hash(password)
+        """Hash password as bcrypt($sha256_hex(password)), yielding a $2b$... hash."""
+        prehashed = hashlib.sha256(password.encode("utf-8")).hexdigest()
+        return _pwd_context.hash(prehashed, scheme="bcrypt")
 
     def verify_password(self, plain: str, hashed: str) -> bool:
         """Return True if plain matches hashed; uses constant-time comparison."""
-        return _pwd_context.verify(plain, hashed)
+        prehashed = hashlib.sha256(plain.encode("utf-8")).hexdigest()
+        # Preferred: compare bcrypt(prehashed)
+        if _pwd_context.verify(prehashed, hashed):
+            return True
+        # Fallback: handle legacy direct bcrypt (plain) or bcrypt_sha256 records
+        try:
+            if _pwd_context.verify(plain, hashed):
+                return True
+        except Exception:
+            pass
+        return False
 
     # -----------------------------------------------------------------------
     # JWT helpers
@@ -160,6 +174,8 @@ class AuthService:
             raise AuthenticationError("Current password is incorrect.")
 
         # 3. Hash the new password
+        if len(new_password) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
         new_hash = self.hash_password(new_password)
 
         # 4. Persist password update and token blacklist in a single transaction.

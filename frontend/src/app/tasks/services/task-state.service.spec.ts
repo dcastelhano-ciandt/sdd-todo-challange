@@ -1,12 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  provideHttpClient,
-} from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TaskStateService } from './task-state.service';
 import type { Task } from '../../shared/models/task.model';
 
@@ -30,11 +25,7 @@ describe('TaskStateService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TaskStateService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(TaskStateService);
@@ -272,5 +263,245 @@ describe('TaskStateService', () => {
       // Rolled back to original snapshot
       expect(service.tasks()).toEqual([TASK_PENDING, TASK_DONE]);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Due Dates + Overdue Filter — TaskStateService extensions
+// ---------------------------------------------------------------------------
+
+/** Returns a date string N days from today (negative = past). */
+function daysFromToday(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+const TASK_OVERDUE: Task = {
+  id: 'overdue-001',
+  userId: 'user-1',
+  title: 'Overdue task',
+  completed: false,
+  due_date: daysFromToday(-1), // yesterday
+};
+
+const TASK_FUTURE: Task = {
+  id: 'future-001',
+  userId: 'user-1',
+  title: 'Future task',
+  completed: false,
+  due_date: daysFromToday(5), // 5 days from now
+};
+
+const TASK_DONE_OVERDUE: Task = {
+  id: 'done-overdue-001',
+  userId: 'user-1',
+  title: 'Completed past-due task',
+  completed: true,
+  due_date: daysFromToday(-2), // 2 days ago, but completed
+};
+
+const TASK_NO_DATE: Task = {
+  id: 'nodate-001',
+  userId: 'user-1',
+  title: 'No due date',
+  completed: false,
+  due_date: null,
+};
+
+describe('TaskStateService — overdue derivation (tasks 8.1, 8.3)', () => {
+  let service: TaskStateService;
+  let httpTesting: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
+    });
+
+    service = TestBed.inject(TaskStateService);
+    httpTesting = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTesting.verify();
+  });
+
+  describe('overdueCount signal', () => {
+    it('should start at 0', () => {
+      expect(service.overdueCount()).toBe(0);
+    });
+
+    it('should count past-due incomplete tasks', () => {
+      service.loadTasks().subscribe();
+      httpTesting
+        .expectOne('/api/v1/tasks')
+        .flush({ tasks: [TASK_OVERDUE, TASK_FUTURE, TASK_NO_DATE] });
+
+      expect(service.overdueCount()).toBe(1);
+    });
+
+    it('should NOT count completed tasks even if past-due', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_OVERDUE, TASK_DONE_OVERDUE] });
+
+      expect(service.overdueCount()).toBe(1); // only TASK_OVERDUE
+    });
+
+    it('should NOT count tasks without a due date', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_NO_DATE] });
+
+      expect(service.overdueCount()).toBe(0);
+    });
+
+    it('should NOT count future-due tasks', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_FUTURE] });
+
+      expect(service.overdueCount()).toBe(0);
+    });
+
+    it('should update overdueCount after toggleCompletion marks an overdue task as done', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_OVERDUE] });
+
+      expect(service.overdueCount()).toBe(1);
+
+      service.toggleCompletion(TASK_OVERDUE.id).subscribe();
+      const toggled = { ...TASK_OVERDUE, completed: true };
+      httpTesting.expectOne(`/api/v1/tasks/${TASK_OVERDUE.id}/toggle`).flush(toggled);
+
+      expect(service.overdueCount()).toBe(0);
+    });
+  });
+
+  describe('tasks() with filter "overdue"', () => {
+    it('should return only past-due incomplete tasks when filter is "overdue"', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({
+        tasks: [TASK_OVERDUE, TASK_FUTURE, TASK_DONE_OVERDUE, TASK_NO_DATE],
+      });
+
+      service.filter.set('overdue');
+
+      const result = service.tasks();
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe(TASK_OVERDUE.id);
+    });
+
+    it('should return empty array when no overdue tasks exist', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({
+        tasks: [TASK_FUTURE, TASK_DONE_OVERDUE, TASK_NO_DATE],
+      });
+
+      service.filter.set('overdue');
+
+      expect(service.tasks()).toEqual([]);
+    });
+
+    it('should not include completed overdue tasks in overdue filter', () => {
+      service.loadTasks().subscribe();
+      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_DONE_OVERDUE] });
+
+      service.filter.set('overdue');
+
+      expect(service.tasks()).toEqual([]);
+    });
+  });
+});
+
+describe('TaskStateService — sort signals (task 8.2)', () => {
+  let service: TaskStateService;
+  let httpTesting: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
+    });
+
+    service = TestBed.inject(TaskStateService);
+    httpTesting = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTesting.verify();
+  });
+
+  it('should have sortBy defaulting to null', () => {
+    expect(service.sortBy()).toBeNull();
+  });
+
+  it('should have sortDir defaulting to "asc"', () => {
+    expect(service.sortDir()).toBe('asc');
+  });
+
+  it('should send sort_by and sort_dir params when sortBy is set', () => {
+    service.sortBy.set('due_date');
+    service.sortDir.set('asc');
+
+    service.loadTasks().subscribe();
+    httpTesting.expectOne('/api/v1/tasks?sort_by=due_date&sort_dir=asc').flush({ tasks: [] });
+  });
+
+  it('should send sort_by=due_date&sort_dir=desc when set', () => {
+    service.sortBy.set('due_date');
+    service.sortDir.set('desc');
+
+    service.loadTasks().subscribe();
+    httpTesting.expectOne('/api/v1/tasks?sort_by=due_date&sort_dir=desc').flush({ tasks: [] });
+  });
+
+  it('should NOT send sort params when sortBy is null', () => {
+    service.sortBy.set(null);
+
+    service.loadTasks().subscribe();
+    httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [] });
+  });
+});
+
+describe('TaskStateService — createTask and updateTask with dueDate (task 8.4)', () => {
+  let service: TaskStateService;
+  let httpTesting: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
+    });
+
+    service = TestBed.inject(TaskStateService);
+    httpTesting = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTesting.verify();
+  });
+
+  it('should POST with due_date when createTask is called with dueDate', () => {
+    service.createTask('Buy milk', '2026-09-01').subscribe();
+
+    const req = httpTesting.expectOne('/api/v1/tasks');
+    expect(req.request.body).toEqual({ title: 'Buy milk', due_date: '2026-09-01' });
+    req.flush({ ...TASK_PENDING, due_date: '2026-09-01' });
+  });
+
+  it('should PUT with due_date when updateTask is called with dueDate', () => {
+    service.loadTasks().subscribe();
+    httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_PENDING] });
+
+    service.updateTask(TASK_PENDING.id, 'Updated title', '2026-10-01').subscribe();
+    const req = httpTesting.expectOne(`/api/v1/tasks/${TASK_PENDING.id}`);
+    expect(req.request.body).toEqual({ title: 'Updated title', due_date: '2026-10-01' });
+    req.flush({ ...TASK_PENDING, title: 'Updated title', due_date: '2026-10-01' });
+  });
+
+  it('should PUT with due_date: null to clear the due date', () => {
+    service.loadTasks().subscribe();
+    httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_PENDING] });
+
+    service.updateTask(TASK_PENDING.id, 'Updated', null).subscribe();
+    const req = httpTesting.expectOne(`/api/v1/tasks/${TASK_PENDING.id}`);
+    expect(req.request.body).toEqual({ title: 'Updated', due_date: null });
+    req.flush({ ...TASK_PENDING, title: 'Updated', due_date: null });
   });
 });

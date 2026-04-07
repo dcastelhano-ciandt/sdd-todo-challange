@@ -241,7 +241,7 @@ export class DashboardComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmNewPassword: ['', [Validators.required, Validators.minLength(8)]],
     },
-    { validators: passwordsMatchValidator }
+    { validators: passwordsMatchValidator },
   );
 
   ngOnInit(): void {
@@ -274,14 +274,12 @@ export class DashboardComponent implements OnInit {
     const newPassword: string = this.changePasswordForm.get('newPassword')!.value;
 
     this.authApi.changePassword(currentPassword, newPassword).subscribe({
-      next: (_newToken: string) => {
+      next: (newToken: string) => {
+        this.authState.setToken(newToken);
+        this.changePasswordForm.reset();
         this.successMessage = 'Password changed successfully.';
         this.submitting = false;
         this.cdr.detectChanges();
-        setTimeout(() => {
-          this.authState.clearSession();
-          this.router.navigate(['/login']);
-        }, 3000);
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 401) {

@@ -2,7 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import type { Task } from '../../shared/models/task.model';
-import { TaskStateService } from '../services/task-state.service';
+import { TaskStateService, isOverdue } from '../services/task-state.service';
 
 @Component({
   selector: 'app-task-item',
@@ -16,7 +16,8 @@ import { TaskStateService } from '../services/task-state.service';
           data-testid="toggle-completion"
           type="button"
           (click)="onToggle()"
-          class="mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+          class="mt-1 w-6 h-6 border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
+          style="border-radius: 9999px"
           [ngClass]="task.completed
             ? 'bg-primary border-primary'
             : 'border-primary/60 group-hover:border-primary group-hover:bg-primary/5'"
@@ -33,8 +34,17 @@ import { TaskStateService } from '../services/task-state.service';
           <h3
             data-testid="task-title"
             class="text-on-surface font-semibold text-[15px] leading-snug"
-            [ngClass]="task.completed ? 'line-through decoration-primary/60 decoration-2' : ''"
+            [ngClass]="task.completed ? 'line-through decoration-primary/60 decoration-2' : (taskIsOverdue ? 'text-error' : '')"
           >{{ task.title }}</h3>
+          <div *ngIf="task.due_date" class="flex items-center gap-1.5 mt-1">
+            <span class="material-symbols-outlined text-[13px]"
+              [ngClass]="taskIsOverdue ? 'text-error' : 'text-on-surface-variant/60'"
+            >calendar_today</span>
+            <span class="text-[11px] font-medium"
+              [ngClass]="taskIsOverdue ? 'text-error font-bold' : 'text-on-surface-variant/60'"
+              [attr.aria-label]="'Due: ' + task.due_date"
+            >{{ task.due_date }}{{ taskIsOverdue ? ' · Overdue' : '' }}</span>
+          </div>
         </div>
 
         <!-- Hover actions -->
@@ -72,6 +82,14 @@ import { TaskStateService } from '../services/task-state.service';
             class="flex-1 px-4 py-2 bg-surface-container-low border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none text-on-surface min-w-0"
             autofocus
           />
+          <input
+            type="date"
+            [value]="editDueDate"
+            name="editDueDate"
+            aria-label="Due date"
+            (input)="onEditDueDateInput($event)"
+            class="px-3 py-2 bg-surface-container-low border-0 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-on-surface text-sm"
+          />
           <button type="submit" class="px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-semibold text-sm shadow-sm transition-transform active:scale-95">Save</button>
           <button type="button" (click)="cancelEditing()" class="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-xl font-semibold text-sm transition-colors hover:bg-surface-container-highest">Cancel</button>
         </form>
@@ -86,6 +104,11 @@ export class TaskItemComponent {
 
   editing = false;
   editTitle = '';
+  editDueDate = '';
+
+  get taskIsOverdue(): boolean {
+    return isOverdue(this.task);
+  }
 
   get checkIconStyle(): Record<string, string> {
     return this.task.completed ? { 'font-variation-settings': "'FILL' 1" } : {};
@@ -97,6 +120,7 @@ export class TaskItemComponent {
 
   startEditing(): void {
     this.editTitle = this.task.title;
+    this.editDueDate = this.task.due_date ?? '';
     this.editing = true;
   }
 
@@ -108,13 +132,18 @@ export class TaskItemComponent {
     this.editTitle = (event.target as HTMLInputElement).value;
   }
 
+  onEditDueDateInput(event: Event): void {
+    this.editDueDate = (event.target as HTMLInputElement).value;
+  }
+
   onSubmitEdit(event: Event): void {
     event.preventDefault();
     const trimmed = this.editTitle.trim();
     if (!trimmed) {
       return;
     }
-    this.taskState.updateTask(this.task.id, trimmed).subscribe({
+    const dueDate: string | null = this.editDueDate.trim() || null;
+    this.taskState.updateTask(this.task.id, trimmed, dueDate).subscribe({
       next: () => {
         this.editing = false;
       },
@@ -122,7 +151,6 @@ export class TaskItemComponent {
   }
 
   onDelete(): void {
-    if (!confirm(`Delete "${this.task.title}"?`)) return;
     this.taskState.deleteTask(this.task.id).subscribe();
   }
 }

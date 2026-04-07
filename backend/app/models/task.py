@@ -7,7 +7,11 @@ Physical schema:
   title       VARCHAR(255) NOT NULL
   completed   BOOLEAN      NOT NULL DEFAULT FALSE
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+  due_date    DATETIME     NULL
 """
+from datetime import date
+from typing import Optional
+
 from sqlalchemy import VARCHAR, Boolean, DateTime, ForeignKey, text
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -34,4 +38,9 @@ class Task(Base):
         DateTime,
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
+    )
+    due_date: Mapped[Optional[date]] = mapped_column(
+        DateTime,
+        nullable=True,
+        default=None,
     )

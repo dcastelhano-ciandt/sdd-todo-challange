@@ -51,14 +51,18 @@ describe('RegisterComponent', () => {
     it('should render an email input field', () => {
       const fixture = createComponent();
       const compiled = fixture.nativeElement as HTMLElement;
-      const emailInput = compiled.querySelector('input[type="email"], input[formControlName="email"]');
+      const emailInput = compiled.querySelector(
+        'input[type="email"], input[formControlName="email"]',
+      );
       expect(emailInput).not.toBeNull();
     });
 
     it('should render a password input field', () => {
       const fixture = createComponent();
       const compiled = fixture.nativeElement as HTMLElement;
-      const passwordInput = compiled.querySelector('input[type="password"], input[formControlName="password"]');
+      const passwordInput = compiled.querySelector(
+        'input[type="password"], input[formControlName="password"]',
+      );
       expect(passwordInput).not.toBeNull();
     });
 
@@ -156,7 +160,11 @@ describe('RegisterComponent', () => {
         status: 422,
         error: {
           detail: [
-            { loc: ['body', 'email'], msg: 'value is not a valid email address', type: 'value_error.email' },
+            {
+              loc: ['body', 'email'],
+              msg: 'value is not a valid email address',
+              type: 'value_error.email',
+            },
           ],
         },
       });

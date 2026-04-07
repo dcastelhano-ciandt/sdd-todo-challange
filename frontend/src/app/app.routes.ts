@@ -4,30 +4,23 @@ import { authGuard } from './auth/guards/auth.guard';
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () =>
-      import('./auth/login/login.component').then((m) => m.LoginComponent),
+    loadComponent: () => import('./auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./auth/register/register.component').then(
-        (m) => m.RegisterComponent
-      ),
+      import('./auth/register/register.component').then((m) => m.RegisterComponent),
   },
   {
     path: 'tasks',
     loadComponent: () =>
-      import('./tasks/task-list/task-list.component').then(
-        (m) => m.TaskListComponent
-      ),
+      import('./tasks/task-list/task-list.component').then((m) => m.TaskListComponent),
     canActivate: [authGuard],
   },
   {
     path: 'account',
     loadComponent: () =>
-      import('./dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent
-      ),
+      import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
     canActivate: [authGuard],
   },
   {

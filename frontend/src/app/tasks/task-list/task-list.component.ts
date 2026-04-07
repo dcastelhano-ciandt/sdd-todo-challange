@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -31,7 +31,8 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
               type="button"
               data-testid="logout-button"
               (click)="logout()"
-              class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all"
+              class="w-8 h-8 bg-surface-container-high flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all"
+              style="border-radius: 9999px"
               title="Sign out"
             >
               <span class="material-symbols-outlined text-on-surface-variant text-[20px]">logout</span>
@@ -73,7 +74,7 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
         </div>
 
         <!-- Filter tabs -->
-        <div class="flex items-center gap-3 mb-10 overflow-x-auto hide-scrollbar">
+        <div class="flex items-center gap-3 mb-6 overflow-x-auto hide-scrollbar">
           <button
             data-testid="filter-all"
             (click)="setFilter('all')"
@@ -113,10 +114,53 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
               [ngClass]="taskState.filter() === 'completed' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'"
             >{{ completedCount }}</span>
           </button>
+          <button
+            data-testid="filter-overdue"
+            (click)="setFilter('overdue')"
+            [ngClass]="taskState.filter() === 'overdue'
+              ? 'bg-error text-on-error'
+              : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'"
+            class="px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 transition-all active:scale-95"
+            [attr.aria-pressed]="taskState.filter() === 'overdue'"
+          >
+            Overdue
+            <span *ngIf="taskState.overdueCount() > 0"
+              class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="taskState.filter() === 'overdue' ? 'bg-on-error/20' : 'bg-error/15 text-error'"
+              aria-live="polite"
+            >{{ taskState.overdueCount() }}</span>
+          </button>
+        </div>
+
+        <!-- Sort controls -->
+        <div class="flex items-center gap-2 mb-10">
+          <button
+            data-testid="sort-due-date"
+            (click)="toggleDueDateSort()"
+            [ngClass]="taskState.sortBy() === 'due_date'
+              ? 'bg-primary/10 text-primary border-primary/30'
+              : 'bg-surface-container-high text-on-surface-variant border-transparent hover:bg-surface-container-highest'"
+            class="px-4 py-1.5 rounded-full text-xs font-semibold border flex items-center gap-1 transition-all"
+            [attr.aria-label]="'Sort by due date ' + taskState.sortDir()"
+          >
+            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+            Due Date
+            <ng-container *ngIf="taskState.sortBy() === 'due_date'">
+              {{ taskState.sortDir() === 'asc' ? '↑' : '↓' }}
+            </ng-container>
+          </button>
+          <button
+            *ngIf="taskState.sortBy() !== null"
+            data-testid="clear-sort"
+            (click)="clearSort()"
+            class="px-4 py-1.5 rounded-full text-xs font-semibold text-on-surface-variant hover:bg-surface-container-highest transition-all"
+          >
+            Clear Sort
+          </button>
         </div>
 
         <!-- New task input -->
-        <form (ngSubmit)="submitCreate()" class="bg-surface-container-low rounded-xl p-2 mb-12 flex items-center gap-2 transition-all focus-within:bg-surface-container-lowest focus-within:shadow-sm">
+        <form (ngSubmit)="submitCreate()" class="bg-surface-container-low rounded-xl p-2 mb-12 flex items-center gap-2 flex-wrap transition-all focus-within:bg-surface-container-lowest focus-within:shadow-sm">
           <div class="p-2 ml-1">
             <span class="material-symbols-outlined text-primary">add</span>
           </div>
@@ -127,7 +171,15 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
             name="newTaskTitle"
             placeholder="What needs to be done?"
             autocomplete="off"
-            class="flex-1 bg-transparent border-none focus:ring-0 py-3 text-on-surface placeholder:text-on-surface-variant/40 outline-none"
+            class="flex-1 bg-transparent border-none focus:ring-0 py-3 text-on-surface placeholder:text-on-surface-variant/40 outline-none min-w-[160px]"
+          />
+          <input
+            data-testid="new-task-due-date-input"
+            type="date"
+            [(ngModel)]="newTaskDueDate"
+            name="newTaskDueDate"
+            aria-label="Due date for new task"
+            class="px-3 py-2 bg-surface-container border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-on-surface text-sm"
           />
           <button
             type="submit"
@@ -145,8 +197,15 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
         </div>
 
         <ng-container *ngIf="!taskState.loading()">
-          <!-- Empty state (no tasks at all) -->
-          <div *ngIf="allTasks.length === 0" data-testid="empty-state" class="py-16 text-center text-on-surface-variant">
+          <!-- Empty states -->
+          <div *ngIf="taskState.filter() === 'overdue' && taskState.overdueCount() === 0"
+            data-testid="overdue-empty-state"
+            class="py-16 text-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-[48px] opacity-30 block mb-4">task_alt</span>
+            No overdue tasks. You are all caught up!
+          </div>
+
+          <div *ngIf="allTasks.length === 0 && taskState.filter() !== 'overdue'" data-testid="empty-state" class="py-16 text-center text-on-surface-variant">
             <span class="material-symbols-outlined text-[48px] opacity-30 block mb-4">checklist</span>
             <ng-container *ngIf="searchTerm; else defaultEmpty">
               No results for '{{ searchTerm }}'
@@ -189,7 +248,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
   private readonly authState = inject(AuthStateService);
   private readonly authApi = inject(AuthApiService);
   private readonly router = inject(Router);
+
   newTaskTitle = '';
+  newTaskDueDate = '';
   searchTerm = '';
   completedExpanded = true;
   username = '';
@@ -207,11 +268,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   get pendingTasks() {
-    return this.taskState.tasks().filter(t => !t.completed);
+    return this.taskState.tasks().filter((t) => !t.completed);
   }
 
   get completedTasks() {
-    return this.taskState.tasks().filter(t => t.completed);
+    return this.taskState.tasks().filter((t) => t.completed);
   }
 
   get pendingCount(): number {
@@ -242,6 +303,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    // Reserved for future modal use or search clearing
+  }
+
   onSearchInput(value: string): void {
     this.searchTerm = value;
     if (this.debounceTimer !== null) {
@@ -261,16 +327,35 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskState.loadTasks().subscribe();
   }
 
-  setFilter(value: 'all' | 'pending' | 'completed'): void {
+  setFilter(value: 'all' | 'pending' | 'completed' | 'overdue'): void {
     this.taskState.filter.set(value);
     this.taskState.loadTasks(this.searchTerm || undefined).subscribe();
+  }
+
+  toggleDueDateSort(): void {
+    const currentSortBy = this.taskState.sortBy();
+    if (currentSortBy === 'due_date') {
+      const newDir = this.taskState.sortDir() === 'asc' ? 'desc' : 'asc';
+      this.taskState.sortDir.set(newDir);
+    } else {
+      this.taskState.sortBy.set('due_date');
+      this.taskState.sortDir.set('asc');
+    }
+    this.taskState.loadTasks().subscribe();
+  }
+
+  clearSort(): void {
+    this.taskState.sortBy.set(null);
+    this.taskState.loadTasks().subscribe();
   }
 
   submitCreate(): void {
     const title = this.newTaskTitle.trim();
     if (!title) return;
-    this.taskState.createTask(title).subscribe();
+    const dueDate = this.newTaskDueDate || null;
+    this.taskState.createTask(title, dueDate).subscribe();
     this.newTaskTitle = '';
+    this.newTaskDueDate = '';
   }
 
   logout(): void {

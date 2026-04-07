@@ -1,11 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthApiService } from '../services/auth-api.service';
@@ -130,6 +125,7 @@ export class LoginComponent implements OnInit {
 
   submitting = false;
   genericError: string | null = null;
+  showGenericError = false;
   sessionExpired = false;
   showPassword = false;
 
@@ -158,12 +154,20 @@ export class LoginComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.submitting = false;
-        this.form.reset();
+        // Do not reset the whole form to avoid setting required errors; just clear password field.
+        this.form.get('password')?.setValue('');
+        this.form.get('password')?.markAsPristine();
+        this.form.get('password')?.markAsUntouched();
+        this.form.get('password')?.setErrors(null);
+        // Set message immediately for tests; toggle visibility next macrotask to avoid NG0100 in template.
         if (err.status === 401) {
           this.genericError = 'Invalid email or password.';
         } else {
           this.genericError = 'An unexpected error occurred. Please try again.';
         }
+        setTimeout(() => {
+          this.showGenericError = true;
+        });
       },
     });
   }

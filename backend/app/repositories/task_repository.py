@@ -2,8 +2,8 @@
 TaskRepository — persistence operations for the tasks table.
 
 Operations:
-- create(user_id, task_id, title) -> Task
-- list_by_user(user_id, status) -> list[Task]
+- create(user_id, task_id, title, due_date) -> Task
+- list_by_user(user_id, status, sort_by, sort_dir) -> list[Task]
 - get_by_id(task_id) -> Task | None
 - update(task) -> Task
 - delete(task) -> None
@@ -11,11 +11,13 @@ Operations:
 list_by_user:
   - Filters WHERE userId = :user_id
   - Optional completed filter when status is True or False (not None)
-  - Orders by created_at DESC
+  - When sort_by="due_date": orders by due_date ASC/DESC nullslast
+  - Otherwise: orders by created_at DESC
 """
+from datetime import date
 from typing import List, Optional
 
-from sqlalchemy import func
+from sqlalchemy import asc, desc, nullslast
 from sqlalchemy.orm import Session
 
 from app.models.task import Task
@@ -25,12 +27,19 @@ class TaskRepository:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    def create(self, user_id: str, task_id: str, title: str) -> Task:
+    def create(
+        self,
+        user_id: str,
+        task_id: str,
+        title: str,
+        due_date: Optional[date] = None,
+    ) -> Task:
         """Persist a new Task and return it."""
         task = Task(
             id=task_id,
             userId=user_id,
             title=title,
+            due_date=due_date,
         )
         self.db.add(task)
         self.db.commit()
@@ -41,13 +50,14 @@ class TaskRepository:
         self,
         user_id: str,
         status: Optional[bool],
-        q: Optional[str] = None,
+        sort_by: Optional[str] = None,
+        sort_dir: str = "asc",
     ) -> List[Task]:
-        """Return tasks for user_id, optionally filtered by completed status and/or keyword.
+        """Return tasks for user_id, optionally filtered by completed status.
 
-        Results are ordered by created_at DESC (newest first).
-
-        q: when provided (non-None), applies a case-insensitive LIKE filter on the title column.
+        When sort_by="due_date": ordered by due_date (direction per sort_dir),
+        with NULL values last (nullslast).
+        Otherwise: ordered by created_at DESC (newest first).
         """
         query = (
             self.db.query(Task)
@@ -55,9 +65,16 @@ class TaskRepository:
         )
         if status is not None:
             query = query.filter(Task.completed == status)
-        if q is not None:
-            query = query.filter(func.lower(Task.title).like(f"%{q.lower()}%"))
-        query = query.order_by(Task.created_at.desc())
+
+        if sort_by == "due_date":
+            if sort_dir == "desc":
+                order_clause = nullslast(desc(Task.due_date))
+            else:
+                order_clause = nullslast(asc(Task.due_date))
+            query = query.order_by(order_clause)
+        else:
+            query = query.order_by(Task.created_at.desc())
+
         return query.all()
 
     def get_by_id(self, task_id: str) -> Optional[Task]:
