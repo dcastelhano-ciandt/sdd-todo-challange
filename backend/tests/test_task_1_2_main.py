@@ -52,19 +52,19 @@ def test_openapi_json_accessible():
 # ---------------------------------------------------------------------------
 
 def test_cors_allows_configured_origin(monkeypatch):
-    monkeypatch.setenv("CORS_ORIGIN", "http://localhost:4200")
+    monkeypatch.setenv("CORS_ORIGIN", "https://sdd-todo-challange-production.up.railway")
     # Re-import to pick up env override (or use the default which is already 4200)
     from app.main import app
     client = TestClient(app)
     response = client.options(
         "/api/v1/auth/register",
         headers={
-            "Origin": "http://localhost:4200",
+            "Origin": "https://sdd-todo-challange-production.up.railway.app",
             "Access-Control-Request-Method": "POST",
         },
     )
     assert "access-control-allow-origin" in response.headers
-    assert response.headers["access-control-allow-origin"] == "http://localhost:4200"
+    assert response.headers["access-control-allow-origin"] == "https://sdd-todo-challange-production.up.railway.app"
 
 
 def test_cors_does_not_allow_arbitrary_origin():
