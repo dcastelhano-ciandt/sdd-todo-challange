@@ -1,11 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthApiService } from '../services/auth-api.service';
@@ -23,12 +18,7 @@ import { ValidationErrorDetail } from '../../shared/models/auth.model';
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="field">
           <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            autocomplete="email"
-          />
+          <input id="email" type="email" formControlName="email" autocomplete="email" />
           <span
             class="field-error"
             *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')"
@@ -41,10 +31,7 @@ import { ValidationErrorDetail } from '../../shared/models/auth.model';
           >
             Please enter a valid email address.
           </span>
-          <span
-            class="field-error"
-            *ngIf="form.get('email')?.hasError('emailInUse')"
-          >
+          <span class="field-error" *ngIf="form.get('email')?.hasError('emailInUse')">
             This email address is already in use.
           </span>
         </div>

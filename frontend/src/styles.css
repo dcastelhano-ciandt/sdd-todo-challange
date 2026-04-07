@@ -27,8 +27,8 @@
   --color-error-bg: #fef2f2;
 
   /* Typography */
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -97,7 +97,12 @@ body {
 }
 
 /* --- Typography --- */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 0;
   margin-bottom: var(--space-4);
   font-weight: var(--font-weight-semibold);
@@ -105,9 +110,15 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text);
 }
 
-h1 { font-size: var(--font-size-2xl); }
-h2 { font-size: var(--font-size-xl); }
-h3 { font-size: var(--font-size-lg); }
+h1 {
+  font-size: var(--font-size-2xl);
+}
+h2 {
+  font-size: var(--font-size-xl);
+}
+h3 {
+  font-size: var(--font-size-lg);
+}
 
 p {
   margin-top: 0;
@@ -186,9 +197,9 @@ app-root {
   color: var(--color-text);
 }
 
-.field input[type="text"],
-.field input[type="email"],
-.field input[type="password"] {
+.field input[type='text'],
+.field input[type='email'],
+.field input[type='password'] {
   width: 100%;
   padding: var(--space-3) var(--space-3);
   font-size: var(--font-size-base);
@@ -197,22 +208,24 @@ app-root {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
   /* Minimum touch target height */
   min-height: var(--touch-target-min);
   appearance: none;
   -webkit-appearance: none;
 }
 
-.field input[type="text"]:hover,
-.field input[type="email"]:hover,
-.field input[type="password"]:hover {
+.field input[type='text']:hover,
+.field input[type='email']:hover,
+.field input[type='password']:hover {
   border-color: var(--color-text-secondary);
 }
 
-.field input[type="text"]:focus,
-.field input[type="email"]:focus,
-.field input[type="password"]:focus {
+.field input[type='text']:focus,
+.field input[type='email']:focus,
+.field input[type='password']:focus {
   outline: none;
   border-color: var(--color-border-focus);
   box-shadow: 0 0 0 3px rgb(79 70 229 / 0.15);
@@ -309,7 +322,7 @@ button:disabled {
 }
 
 /* Primary submit button (auth forms) */
-.auth-container button[type="submit"] {
+.auth-container button[type='submit'] {
   width: 100%;
   padding: var(--space-3) var(--space-4);
   background-color: var(--color-primary);
@@ -321,12 +334,12 @@ button:disabled {
   margin-top: var(--space-2);
 }
 
-.auth-container button[type="submit"]:hover:not(:disabled) {
+.auth-container button[type='submit']:hover:not(:disabled) {
   background-color: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
 }
 
-.auth-container button[type="submit"]:focus-visible {
+.auth-container button[type='submit']:focus-visible {
   outline: 2px solid var(--color-primary-focus);
   outline-offset: 2px;
   box-shadow: 0 0 0 3px rgb(79 70 229 / 0.25);
@@ -485,8 +498,8 @@ button:disabled {
   color: var(--color-text-muted);
 }
 
-.modal-field input[type="text"],
-.modal-field input[type="date"] {
+.modal-field input[type='text'],
+.modal-field input[type='date'] {
   width: 100%;
   padding: var(--space-3);
   font-size: var(--font-size-base);
@@ -496,21 +509,23 @@ button:disabled {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   min-height: var(--touch-target-min);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
   box-sizing: border-box;
 }
 
-.modal-field input[type="text"]::placeholder {
+.modal-field input[type='text']::placeholder {
   color: var(--color-text-muted);
 }
 
-.modal-field input[type="text"]:hover,
-.modal-field input[type="date"]:hover {
+.modal-field input[type='text']:hover,
+.modal-field input[type='date']:hover {
   border-color: var(--color-text-secondary);
 }
 
-.modal-field input[type="text"]:focus,
-.modal-field input[type="date"]:focus {
+.modal-field input[type='text']:focus,
+.modal-field input[type='date']:focus {
   outline: none;
   border-color: var(--color-border-focus);
   box-shadow: 0 0 0 3px rgb(79 70 229 / 0.15);
@@ -639,36 +654,36 @@ button:disabled {
 }
 
 /* Toggle / complete button */
-.task-item button[data-testid="toggle-completion"] {
+.task-item button[data-testid='toggle-completion'] {
   background-color: var(--color-surface);
   color: var(--color-primary);
   border-color: var(--color-primary);
 }
 
-.task-item button[data-testid="toggle-completion"]:hover {
+.task-item button[data-testid='toggle-completion']:hover {
   background-color: #eef2ff;
 }
 
 /* Edit button */
-.task-item button[data-testid="edit-button"] {
+.task-item button[data-testid='edit-button'] {
   background-color: var(--color-surface);
   color: var(--color-text-secondary);
   border-color: var(--color-border);
 }
 
-.task-item button[data-testid="edit-button"]:hover {
+.task-item button[data-testid='edit-button']:hover {
   background-color: #f3f4f6;
   color: var(--color-text);
 }
 
 /* Delete button */
-.task-item button[data-testid="delete-button"] {
+.task-item button[data-testid='delete-button'] {
   background-color: var(--color-surface);
   color: var(--color-danger);
   border-color: #fecaca;
 }
 
-.task-item button[data-testid="delete-button"]:hover {
+.task-item button[data-testid='delete-button']:hover {
   background-color: var(--color-error-bg);
   border-color: var(--color-danger);
 }
@@ -682,8 +697,8 @@ button:disabled {
   flex-wrap: wrap;
 }
 
-.task-item form input[type="text"],
-.task-item form input[type="date"] {
+.task-item form input[type='text'],
+.task-item form input[type='date'] {
   flex: 1 1 0%;
   padding: var(--space-2) var(--space-3);
   font-size: var(--font-size-sm);
@@ -693,34 +708,36 @@ button:disabled {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   min-height: var(--touch-target-min);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
   min-width: 0;
 }
 
-.task-item form input[type="text"]:focus,
-.task-item form input[type="date"]:focus {
+.task-item form input[type='text']:focus,
+.task-item form input[type='date']:focus {
   outline: none;
   border-color: var(--color-border-focus);
   box-shadow: 0 0 0 3px rgb(79 70 229 / 0.15);
 }
 
-.task-item form button[type="submit"] {
+.task-item form button[type='submit'] {
   background-color: var(--color-primary);
   color: #ffffff;
   border-color: var(--color-primary);
 }
 
-.task-item form button[type="submit"]:hover {
+.task-item form button[type='submit']:hover {
   background-color: var(--color-primary-hover);
 }
 
-.task-item form button[type="button"] {
+.task-item form button[type='button'] {
   background-color: var(--color-surface);
   color: var(--color-text-secondary);
   border-color: var(--color-border);
 }
 
-.task-item form button[type="button"]:hover {
+.task-item form button[type='button']:hover {
   background-color: #f3f4f6;
 }
 
@@ -762,7 +779,6 @@ button:disabled {
   box-shadow: 0 0 0 3px rgb(79 70 229 / 0.25);
 }
 
-
 /* --- Success Message --- */
 .success-message {
   padding: var(--space-3) var(--space-4);
@@ -794,7 +810,7 @@ button:disabled {
 }
 
 /* --- Checkbox inputs --- */
-input[type="checkbox"] {
+input[type='checkbox'] {
   width: 1.125rem;
   height: 1.125rem;
   cursor: pointer;
@@ -803,7 +819,7 @@ input[type="checkbox"] {
   padding: var(--space-3);
 }
 
-input[type="checkbox"]:focus-visible {
+input[type='checkbox']:focus-visible {
   outline: 2px solid var(--color-primary-focus);
   outline-offset: 2px;
 }

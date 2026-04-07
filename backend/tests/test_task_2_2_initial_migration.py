@@ -263,9 +263,10 @@ def test_downgrade_removes_tables():
 
     try:
         cfg = _make_alembic_cfg(db_url)
-        # Apply then revert
+        # Apply then revert all the way to base to ensure all tables are dropped,
+        # since additional migrations may be present after the initial schema.
         alembic.command.upgrade(cfg, "head")
-        alembic.command.downgrade(cfg, "-1")
+        alembic.command.downgrade(cfg, "base")
 
         conn = sqlite3.connect(db_path)
         tables = _get_tables(conn)

@@ -1,11 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  provideHttpClient,
-} from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TaskStateService } from './task-state.service';
 import type { Task } from '../../shared/models/task.model';
@@ -30,11 +25,7 @@ describe('TaskStateService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TaskStateService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(TaskStateService);
@@ -251,7 +242,7 @@ const TASK_OVERDUE: Task = {
   userId: 'user-1',
   title: 'Overdue task',
   completed: false,
-  due_date: daysFromToday(-1),   // yesterday
+  due_date: daysFromToday(-1), // yesterday
 };
 
 const TASK_FUTURE: Task = {
@@ -259,7 +250,7 @@ const TASK_FUTURE: Task = {
   userId: 'user-1',
   title: 'Future task',
   completed: false,
-  due_date: daysFromToday(5),    // 5 days from now
+  due_date: daysFromToday(5), // 5 days from now
 };
 
 const TASK_DONE_OVERDUE: Task = {
@@ -267,7 +258,7 @@ const TASK_DONE_OVERDUE: Task = {
   userId: 'user-1',
   title: 'Completed past-due task',
   completed: true,
-  due_date: daysFromToday(-2),   // 2 days ago, but completed
+  due_date: daysFromToday(-2), // 2 days ago, but completed
 };
 
 const TASK_NO_DATE: Task = {
@@ -284,11 +275,7 @@ describe('TaskStateService — overdue derivation (tasks 8.1, 8.3)', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TaskStateService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(TaskStateService);
@@ -306,7 +293,9 @@ describe('TaskStateService — overdue derivation (tasks 8.1, 8.3)', () => {
 
     it('should count past-due incomplete tasks', () => {
       service.loadTasks().subscribe();
-      httpTesting.expectOne('/api/v1/tasks').flush({ tasks: [TASK_OVERDUE, TASK_FUTURE, TASK_NO_DATE] });
+      httpTesting
+        .expectOne('/api/v1/tasks')
+        .flush({ tasks: [TASK_OVERDUE, TASK_FUTURE, TASK_NO_DATE] });
 
       expect(service.overdueCount()).toBe(1);
     });
@@ -388,11 +377,7 @@ describe('TaskStateService — sort signals (task 8.2)', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TaskStateService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(TaskStateService);
@@ -441,11 +426,7 @@ describe('TaskStateService — createTask and updateTask with dueDate (task 8.4)
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TaskStateService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [TaskStateService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(TaskStateService);

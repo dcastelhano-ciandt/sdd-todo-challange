@@ -4,9 +4,7 @@ const AUTH_TOKEN_KEY = 'auth_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStateService {
-  private readonly _token = signal<string | null>(
-    localStorage.getItem(AUTH_TOKEN_KEY)
-  );
+  private readonly _token = signal<string | null>(localStorage.getItem(AUTH_TOKEN_KEY));
 
   readonly token = this._token.asReadonly();
 

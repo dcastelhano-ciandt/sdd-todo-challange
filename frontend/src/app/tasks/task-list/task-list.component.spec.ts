@@ -25,18 +25,22 @@ const TASK_DONE: Task = {
   completed: true,
 };
 
-function createMockTaskStateService(overrides: Partial<{
-  tasks: Task[];
-  loading: boolean;
-  filter: 'all' | 'pending' | 'completed' | 'overdue';
-  loadTasksFn: () => Observable<void>;
-  overdueCount: number;
-  sortBy: 'due_date' | null;
-  sortDir: 'asc' | 'desc';
-}> = {}) {
+function createMockTaskStateService(
+  overrides: Partial<{
+    tasks: Task[];
+    loading: boolean;
+    filter: 'all' | 'pending' | 'completed' | 'overdue';
+    loadTasksFn: () => Observable<void>;
+    overdueCount: number;
+    sortBy: 'due_date' | null;
+    sortDir: 'asc' | 'desc';
+  }> = {},
+) {
   const tasksSignal = signal<Task[]>(overrides.tasks ?? []);
   const loadingSignal = signal<boolean>(overrides.loading ?? false);
-  const filterSignal = signal<'all' | 'pending' | 'completed' | 'overdue'>(overrides.filter ?? 'all');
+  const filterSignal = signal<'all' | 'pending' | 'completed' | 'overdue'>(
+    overrides.filter ?? 'all',
+  );
   const overdueCountSignal = signal<number>(overrides.overdueCount ?? 0);
   const sortBySignal = signal<'due_date' | null>(overrides.sortBy ?? null);
   const sortDirSignal = signal<'asc' | 'desc'>(overrides.sortDir ?? 'asc');
@@ -87,7 +91,9 @@ describe('TaskListComponent', () => {
     });
 
     it('should call TaskStateService.loadTasks on ngOnInit', () => {
-      const loadTasksSpy = vi.spyOn(taskState, 'loadTasks').mockReturnValue(of(undefined as unknown as void));
+      const loadTasksSpy = vi
+        .spyOn(taskState, 'loadTasks')
+        .mockReturnValue(of(undefined as unknown as void));
       fixture.detectChanges();
 
       expect(loadTasksSpy).toHaveBeenCalledOnce();
@@ -297,7 +303,7 @@ describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
   it('should render a navigation link to /dashboard in the header (requirement 1.1)', () => {
     const el: HTMLElement = navFixture.nativeElement;
     const dashboardLink = el.querySelector<HTMLAnchorElement>(
-      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]',
     );
     expect(dashboardLink).not.toBeNull();
   });
@@ -306,7 +312,7 @@ describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
     const el: HTMLElement = navFixture.nativeElement;
     const logoutBtn = el.querySelector('[data-testid="logout-button"]');
     const dashboardLink = el.querySelector(
-      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+      '[data-testid="dashboard-link"], a[href="/dashboard"], a[routerLink="/dashboard"], a[routerLink="dashboard"]',
     );
     expect(logoutBtn).not.toBeNull();
     expect(dashboardLink).not.toBeNull();
@@ -317,20 +323,19 @@ describe('TaskListComponent — task 6 (dashboard navigation link)', () => {
     const header = el.querySelector('.task-list-header');
     expect(header).not.toBeNull();
     const dashboardLink = header!.querySelector(
-      '[data-testid="dashboard-link"], a[routerLink="/dashboard"], a[routerLink="dashboard"]'
+      '[data-testid="dashboard-link"], a[routerLink="/dashboard"], a[routerLink="dashboard"]',
     );
     expect(dashboardLink).not.toBeNull();
   });
 
   it('should navigate to /dashboard when the dashboard link is clicked', async () => {
     const el: HTMLElement = navFixture.nativeElement;
-    const dashboardLink = el.querySelector<HTMLAnchorElement>(
-      '[data-testid="dashboard-link"]'
-    );
+    const dashboardLink = el.querySelector<HTMLAnchorElement>('[data-testid="dashboard-link"]');
     expect(dashboardLink).not.toBeNull();
     // The link must have a routerLink or href pointing at dashboard
     const href = dashboardLink!.getAttribute('href');
-    const routerLink = dashboardLink!.getAttribute('ng-reflect-router-link') ??
+    const routerLink =
+      dashboardLink!.getAttribute('ng-reflect-router-link') ??
       dashboardLink!.getAttribute('routerlink');
     expect(href === '/dashboard' || routerLink !== null || href?.includes('dashboard')).toBe(true);
   });
@@ -505,7 +510,11 @@ describe('TaskListComponent — overdue empty state (task 10.4)', () => {
   });
 
   it('should NOT show the overdue empty state when tasks exist', () => {
-    const { fixture } = makeListFixture({ tasks: [OVERDUE_TASK], filter: 'overdue', overdueCount: 1 });
+    const { fixture } = makeListFixture({
+      tasks: [OVERDUE_TASK],
+      filter: 'overdue',
+      overdueCount: 1,
+    });
     const el: HTMLElement = fixture.nativeElement;
     const emptyState = el.querySelector('[data-testid="overdue-empty-state"]');
     expect(emptyState).toBeNull();

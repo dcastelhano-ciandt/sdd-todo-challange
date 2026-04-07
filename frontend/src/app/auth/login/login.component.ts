@@ -1,11 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthApiService } from '../services/auth-api.service';
@@ -26,12 +21,7 @@ import { AuthStateService } from '../services/auth-state.service';
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="field">
           <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            autocomplete="email"
-          />
+          <input id="email" type="email" formControlName="email" autocomplete="email" />
           <span
             class="field-error"
             *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')"
@@ -56,7 +46,7 @@ import { AuthStateService } from '../services/auth-state.service';
           </span>
         </div>
 
-        <div class="login-error" *ngIf="genericError" role="alert">
+        <div class="login-error" *ngIf="showGenericError" role="alert">
           <span class="login-error-icon">&#9888;</span>
           {{ genericError }}
         </div>
@@ -84,6 +74,7 @@ export class LoginComponent implements OnInit {
 
   submitting = false;
   genericError: string | null = null;
+  showGenericError = false;
   sessionExpired = false;
 
   ngOnInit(): void {
@@ -111,12 +102,20 @@ export class LoginComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.submitting = false;
-        this.form.reset();
+        // Do not reset the whole form to avoid setting required errors; just clear password field.
+        this.form.get('password')?.setValue('');
+        this.form.get('password')?.markAsPristine();
+        this.form.get('password')?.markAsUntouched();
+        this.form.get('password')?.setErrors(null);
+        // Set message immediately for tests; toggle visibility next macrotask to avoid NG0100 in template.
         if (err.status === 401) {
           this.genericError = 'Invalid email or password.';
         } else {
           this.genericError = 'An unexpected error occurred. Please try again.';
         }
+        setTimeout(() => {
+          this.showGenericError = true;
+        });
       },
     });
   }

@@ -15,11 +15,7 @@ function todayISO(): string {
 
 /** Pure helper: a task is overdue when its due_date is in the past and it is incomplete. */
 export function isOverdue(task: Task): boolean {
-  return (
-    task.due_date != null &&
-    !task.completed &&
-    task.due_date < todayISO()
-  );
+  return task.due_date != null && !task.completed && task.due_date < todayISO();
 }
 
 @Injectable({ providedIn: 'root' })
@@ -35,9 +31,7 @@ export class TaskStateService {
   readonly sortBy = signal<TaskSortBy>(null);
   readonly sortDir = signal<TaskSortDir>('asc');
 
-  readonly overdueCount = computed(() =>
-    this._allTasks().filter(isOverdue).length
-  );
+  readonly overdueCount = computed(() => this._allTasks().filter(isOverdue).length);
 
   readonly tasks = computed(() => {
     const f = this.filter();
@@ -85,9 +79,7 @@ export class TaskStateService {
   updateTask(taskId: string, title: string, dueDate?: string | null): Observable<Task> {
     return this.taskApi.updateTask(taskId, title, dueDate).pipe(
       tap((updated) => {
-        this._tasks.update((current) =>
-          current.map((t) => (t.id === taskId ? updated : t)),
-        );
+        this._tasks.update((current) => current.map((t) => (t.id === taskId ? updated : t)));
       }),
     );
   }
@@ -97,16 +89,12 @@ export class TaskStateService {
 
     // Optimistic update
     this._tasks.update((current) =>
-      current.map((t) =>
-        t.id === taskId ? { ...t, completed: !t.completed } : t,
-      ),
+      current.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t)),
     );
 
     return this.taskApi.toggleCompletion(taskId).pipe(
       tap((updated) => {
-        this._tasks.update((current) =>
-          current.map((t) => (t.id === taskId ? updated : t)),
-        );
+        this._tasks.update((current) => current.map((t) => (t.id === taskId ? updated : t)));
       }),
       catchError((err) => {
         // Rollback to the original snapshot

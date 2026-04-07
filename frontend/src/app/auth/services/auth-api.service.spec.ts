@@ -1,12 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpClient,
-  provideHttpClient,
-} from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AuthApiService } from './auth-api.service';
 import { TokenResponse, UserProfile } from '../../shared/models/auth.model';
@@ -17,11 +11,7 @@ describe('AuthApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        AuthApiService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [AuthApiService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(AuthApiService);
@@ -114,10 +104,7 @@ describe('AuthApiService', () => {
       });
 
       const req = httpTestingController.expectOne('/api/v1/auth/login');
-      req.flush(
-        { detail: 'Invalid credentials' },
-        { status: 401, statusText: 'Unauthorized' }
-      );
+      req.flush({ detail: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
 
       expect(errorReceived).toBe(true);
     });
@@ -166,7 +153,7 @@ describe('AuthApiService', () => {
       const req = httpTestingController.expectOne('/api/v1/auth/change-password');
       req.flush(
         { detail: 'The current password you entered is incorrect.' },
-        { status: 401, statusText: 'Unauthorized' }
+        { status: 401, statusText: 'Unauthorized' },
       );
 
       expect(errorReceived).toBe(true);
@@ -184,7 +171,7 @@ describe('AuthApiService', () => {
       const req = httpTestingController.expectOne('/api/v1/auth/change-password');
       req.flush(
         { detail: 'Password must be at least 8 characters long.' },
-        { status: 422, statusText: 'Unprocessable Entity' }
+        { status: 422, statusText: 'Unprocessable Entity' },
       );
 
       expect(errorReceived).toBe(true);
@@ -224,10 +211,7 @@ describe('AuthApiService', () => {
       });
 
       const req = httpTestingController.expectOne('/api/v1/auth/me');
-      req.flush(
-        { detail: 'Not authenticated' },
-        { status: 401, statusText: 'Unauthorized' }
-      );
+      req.flush({ detail: 'Not authenticated' }, { status: 401, statusText: 'Unauthorized' });
 
       expect(errorReceived).toBe(true);
     });
