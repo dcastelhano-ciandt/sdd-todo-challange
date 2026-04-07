@@ -17,7 +17,7 @@ list_by_user:
 from datetime import date
 from typing import List, Optional
 
-from sqlalchemy import asc, desc, nullslast
+from sqlalchemy import asc, desc, nullslast, func
 from sqlalchemy.orm import Session
 
 from app.models.task import Task
@@ -50,6 +50,7 @@ class TaskRepository:
         self,
         user_id: str,
         status: Optional[bool],
+        q: Optional[str] = None,
         sort_by: Optional[str] = None,
         sort_dir: str = "asc",
     ) -> List[Task]:
@@ -65,6 +66,10 @@ class TaskRepository:
         )
         if status is not None:
             query = query.filter(Task.completed == status)
+        if q is not None:
+            kw = q.strip().lower()
+            if kw:
+                query = query.filter(func.lower(Task.title).like(f"%{kw}%"))
 
         if sort_by == "due_date":
             if sort_dir == "desc":

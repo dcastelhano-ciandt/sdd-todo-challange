@@ -11,6 +11,13 @@ import { signal } from '@angular/core';
 import type { Task } from '../../shared/models/task.model';
 import { Observable, of, Subject } from 'rxjs';
 
+// Provide HttpClientTesting for all suites to intercept AuthApiService.getProfile calls
+beforeEach(() => {
+  TestBed.configureTestingModule({
+    providers: [provideHttpClient(), provideHttpClientTesting()],
+  });
+});
+
 const TASK_PENDING: Task = {
   id: 'aaaaaaaa-0000-0000-0000-000000000001',
   userId: 'user-1',
@@ -95,6 +102,9 @@ describe('TaskListComponent', () => {
         .spyOn(taskState, 'loadTasks')
         .mockReturnValue(of(undefined as unknown as void));
       fixture.detectChanges();
+      // Auth profile request triggered by TaskListComponent.ngOnInit
+      const req = httpTesting.expectOne('/api/v1/auth/me');
+      req.flush({ email: 'tester@example.com' });
 
       expect(loadTasksSpy).toHaveBeenCalledOnce();
     });
@@ -314,9 +324,7 @@ describe('TaskListComponent — search input rendering', () => {
     const el: HTMLElement = searchFixture.nativeElement;
     // The leading icon should be a span/element containing the text "search"
     const icons = el.querySelectorAll('.material-symbols-outlined');
-    const hasSearchIcon = Array.from(icons).some(
-      (icon) => icon.textContent?.trim() === 'search'
-    );
+    const hasSearchIcon = Array.from(icons).some((icon) => icon.textContent?.trim() === 'search');
     expect(hasSearchIcon).toBe(true);
   });
 
@@ -460,7 +468,11 @@ describe('TaskListComponent — filter button triggers reload with current searc
   let filterMockState: ReturnType<typeof createMockTaskStateService>;
 
   beforeEach(() => {
-    filterMockState = createMockTaskStateService({ loading: false, tasks: [TASK_PENDING], filter: 'all' });
+    filterMockState = createMockTaskStateService({
+      loading: false,
+      tasks: [TASK_PENDING],
+      filter: 'all',
+    });
 
     TestBed.configureTestingModule({
       imports: [TaskListComponent],

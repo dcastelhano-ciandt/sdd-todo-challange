@@ -19,13 +19,25 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
           <div class="flex items-center gap-8">
             <span class="text-xl font-bold tracking-tighter text-primary">Task Flow</span>
             <div class="hidden md:flex items-center gap-6">
-              <a class="text-primary font-semibold border-b-2 border-primary py-5 text-sm" href="#">Tasks</a>
-              <a routerLink="/account" data-testid="dashboard-link" class="text-on-surface-variant hover:text-primary py-5 text-sm transition-colors">Account</a>
+              <a class="text-primary font-semibold border-b-2 border-primary py-5 text-sm" href="#"
+                >Tasks</a
+              >
+              <a
+                routerLink="/dashboard"
+                data-testid="dashboard-link"
+                class="text-on-surface-variant hover:text-primary py-5 text-sm transition-colors"
+                >Account</a
+              >
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <button type="button" class="p-2 hover:bg-surface-container-low rounded-full transition-colors">
-              <span class="material-symbols-outlined text-on-surface-variant text-[22px]">notifications</span>
+            <button
+              type="button"
+              class="p-2 hover:bg-surface-container-low rounded-full transition-colors"
+            >
+              <span class="material-symbols-outlined text-on-surface-variant text-[22px]"
+                >notifications</span
+              >
             </button>
             <button
               type="button"
@@ -35,17 +47,21 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
               style="border-radius: 9999px"
               title="Sign out"
             >
-              <span class="material-symbols-outlined text-on-surface-variant text-[20px]">logout</span>
+              <span class="material-symbols-outlined text-on-surface-variant text-[20px]"
+                >logout</span
+              >
             </button>
           </div>
         </nav>
       </header>
 
       <!-- Main content -->
-      <main class="max-w-[720px] mx-auto px-6 py-12 md:py-16">
+      <main class="task-list-container max-w-[720px] mx-auto px-6 py-12 md:py-16">
         <!-- Welcome header -->
         <header class="mb-10">
-          <h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">{{ greeting }}, {{ username }}</h1>
+          <h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">
+            {{ greeting }}, {{ username }}
+          </h1>
           <p class="text-on-surface-variant font-medium opacity-80 text-sm">{{ todayLabel }}</p>
         </header>
 
@@ -69,66 +85,91 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
               class="material-symbols-outlined text-on-surface-variant/40 cursor-pointer hover:text-on-surface"
               data-testid="clear-search"
               (click)="clearSearch()"
-            >close</span>
+              >close</span
+            >
           </div>
         </div>
 
         <!-- Filter tabs -->
-        <div class="flex items-center gap-3 mb-6 overflow-x-auto hide-scrollbar">
+        <div class="filter-controls flex items-center gap-3 mb-6 overflow-x-auto hide-scrollbar">
           <button
             data-testid="filter-all"
             (click)="setFilter('all')"
-            [ngClass]="taskState.filter() === 'all'
-              ? 'bg-primary text-on-primary'
-              : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'"
+            [ngClass]="
+              taskState.filter() === 'all'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+            "
             class="px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 transition-all active:scale-95"
           >
             All
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-              [ngClass]="taskState.filter() === 'all' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'"
-            >{{ allTasks.length }}</span>
+            <span
+              class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="
+                taskState.filter() === 'all' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'
+              "
+              >{{ allTasks.length }}</span
+            >
           </button>
           <button
             data-testid="filter-pending"
             (click)="setFilter('pending')"
-            [ngClass]="taskState.filter() === 'pending'
-              ? 'bg-primary text-on-primary'
-              : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'"
+            [ngClass]="
+              taskState.filter() === 'pending'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+            "
             class="px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 transition-all active:scale-95"
           >
             Pending
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-              [ngClass]="taskState.filter() === 'pending' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'"
-            >{{ pendingCount }}</span>
+            <span
+              class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="
+                taskState.filter() === 'pending' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'
+              "
+              >{{ pendingCount }}</span
+            >
           </button>
           <button
             data-testid="filter-completed"
             (click)="setFilter('completed')"
-            [ngClass]="taskState.filter() === 'completed'
-              ? 'bg-primary text-on-primary'
-              : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'"
+            [ngClass]="
+              taskState.filter() === 'completed'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+            "
             class="px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 transition-all active:scale-95"
           >
             Completed
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-              [ngClass]="taskState.filter() === 'completed' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'"
-            >{{ completedCount }}</span>
+            <span
+              class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+              [ngClass]="
+                taskState.filter() === 'completed' ? 'bg-on-primary/20' : 'bg-on-surface-variant/10'
+              "
+              >{{ completedCount }}</span
+            >
           </button>
           <button
             data-testid="filter-overdue"
             (click)="setFilter('overdue')"
-            [ngClass]="taskState.filter() === 'overdue'
-              ? 'bg-error text-on-error'
-              : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'"
+            [ngClass]="
+              taskState.filter() === 'overdue'
+                ? 'bg-error text-on-error'
+                : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+            "
             class="px-5 py-2 rounded-full text-sm font-semibold flex items-center gap-2 transition-all active:scale-95"
             [attr.aria-pressed]="taskState.filter() === 'overdue'"
           >
             Overdue
-            <span *ngIf="taskState.overdueCount() > 0"
+            <span
+              *ngIf="taskState.overdueCount() > 0"
               class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-              [ngClass]="taskState.filter() === 'overdue' ? 'bg-on-error/20' : 'bg-error/15 text-error'"
+              [ngClass]="
+                taskState.filter() === 'overdue' ? 'bg-on-error/20' : 'bg-error/15 text-error'
+              "
               aria-live="polite"
-            >{{ taskState.overdueCount() }}</span>
+              >{{ taskState.overdueCount() }}</span
+            >
           </button>
         </div>
 
@@ -137,9 +178,11 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
           <button
             data-testid="sort-due-date"
             (click)="toggleDueDateSort()"
-            [ngClass]="taskState.sortBy() === 'due_date'
-              ? 'bg-primary/10 text-primary border-primary/30'
-              : 'bg-surface-container-high text-on-surface-variant border-transparent hover:bg-surface-container-highest'"
+            [ngClass]="
+              taskState.sortBy() === 'due_date'
+                ? 'bg-primary/10 text-primary border-primary/30'
+                : 'bg-surface-container-high text-on-surface-variant border-transparent hover:bg-surface-container-highest'
+            "
             class="px-4 py-1.5 rounded-full text-xs font-semibold border flex items-center gap-1 transition-all"
             [attr.aria-label]="'Sort by due date ' + taskState.sortDir()"
           >
@@ -160,7 +203,10 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
         </div>
 
         <!-- New task input -->
-        <form (ngSubmit)="submitCreate()" class="bg-surface-container-low rounded-xl p-2 mb-12 flex items-center gap-2 flex-wrap transition-all focus-within:bg-surface-container-lowest focus-within:shadow-sm">
+        <form
+          (ngSubmit)="submitCreate()"
+          class="bg-surface-container-low rounded-xl p-2 mb-12 flex items-center gap-2 flex-wrap transition-all focus-within:bg-surface-container-lowest focus-within:shadow-sm"
+        >
           <div class="p-2 ml-1">
             <span class="material-symbols-outlined text-primary">add</span>
           </div>
@@ -192,21 +238,35 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
         </form>
 
         <!-- Loading -->
-        <div *ngIf="taskState.loading()" data-testid="loading-indicator" class="py-16 text-center text-on-surface-variant text-sm">
+        <div
+          *ngIf="taskState.loading()"
+          data-testid="loading-indicator"
+          class="py-16 text-center text-on-surface-variant text-sm"
+        >
           Loading tasks...
         </div>
 
         <ng-container *ngIf="!taskState.loading()">
           <!-- Empty states -->
-          <div *ngIf="taskState.filter() === 'overdue' && taskState.overdueCount() === 0"
+          <div
+            *ngIf="taskState.filter() === 'overdue' && taskState.overdueCount() === 0"
             data-testid="overdue-empty-state"
-            class="py-16 text-center text-on-surface-variant">
-            <span class="material-symbols-outlined text-[48px] opacity-30 block mb-4">task_alt</span>
+            class="py-16 text-center text-on-surface-variant"
+          >
+            <span class="material-symbols-outlined text-[48px] opacity-30 block mb-4"
+              >task_alt</span
+            >
             No overdue tasks. You are all caught up!
           </div>
 
-          <div *ngIf="allTasks.length === 0 && taskState.filter() !== 'overdue'" data-testid="empty-state" class="py-16 text-center text-on-surface-variant">
-            <span class="material-symbols-outlined text-[48px] opacity-30 block mb-4">checklist</span>
+          <div
+            *ngIf="allTasks.length === 0 && taskState.filter() !== 'overdue'"
+            data-testid="empty-state"
+            class="py-16 text-center text-on-surface-variant"
+          >
+            <span class="material-symbols-outlined text-[48px] opacity-30 block mb-4"
+              >checklist</span
+            >
             <ng-container *ngIf="searchTerm; else defaultEmpty">
               No results for '{{ searchTerm }}'
             </ng-container>
@@ -228,9 +288,11 @@ import { AuthApiService } from '../../auth/services/auth-api.service';
                 (click)="completedExpanded = !completedExpanded"
                 class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors font-semibold py-4 mb-2 group"
               >
-                <span class="material-symbols-outlined transition-transform duration-200"
+                <span
+                  class="material-symbols-outlined transition-transform duration-200"
                   [ngClass]="completedExpanded ? 'rotate-0' : '-rotate-90'"
-                >expand_more</span>
+                  >expand_more</span
+                >
                 <span>Completed ({{ completedTasks.length }})</span>
               </button>
               <div *ngIf="completedExpanded" class="space-y-1 opacity-60">
@@ -284,7 +346,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   get todayLabel(): string {
-    return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    return new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    });
   }
 
   ngOnInit(): void {

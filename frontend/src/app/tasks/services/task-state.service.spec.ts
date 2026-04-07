@@ -109,7 +109,9 @@ describe('TaskStateService', () => {
       service.filter.set('pending');
       service.loadTasks('report').subscribe();
 
-      httpTesting.expectOne('/api/v1/tasks?status=pending&q=report').flush({ tasks: [TASK_PENDING] });
+      httpTesting
+        .expectOne('/api/v1/tasks?status=pending&q=report')
+        .flush({ tasks: [TASK_PENDING] });
     });
 
     it('should not append q param when loadTasks is called without a keyword', () => {
