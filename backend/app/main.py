@@ -10,6 +10,8 @@ Responsibilities:
 - Expose the auto-generated OpenAPI spec at /docs.
 """
 from contextlib import asynccontextmanager
+from pathlib import Path
+import logging
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,7 +34,23 @@ from app.routers import auth, tasks
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Alembic migration runner is added in task 2.3.
+    # Startup: run Alembic migrations to ensure DB schema exists
+    try:
+        from alembic import command
+        from alembic.config import Config
+
+        # In container, app code lives under /app/app; base_dir resolves to /app
+        base_dir = Path(__file__).resolve().parents[1]
+        alembic_ini = str(base_dir / "alembic.ini")
+        alembic_dir = str(base_dir / "alembic")
+
+        cfg = Config(alembic_ini)
+        cfg.set_main_option("script_location", alembic_dir)
+        cfg.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+        command.upgrade(cfg, "head")
+    except Exception as exc:
+        logging.getLogger("uvicorn.error").exception("Failed to run migrations on startup: %s", exc)
+        raise
     yield
     # Shutdown: nothing to clean up at this stage.
 
